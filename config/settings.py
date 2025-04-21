@@ -34,6 +34,16 @@ ALLOWED_HOSTS = [
     'https://backend-cdie.onrender.com'
 ]
 
+# Static files (CSS, JavaScript, Images)
+STATIC_URL = '/static/'
+
+# Add this!!
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Optional: extra config if you want
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'),
+]
 
 # Application definition
 
