@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # Install Python dependencies
-pip install -r requirements.txt
 pip install gdown
 
-# Create models folder
+# Create model folder
 mkdir -p model
 
 # Download model files
@@ -21,12 +20,5 @@ gdown --id 1xBfAkzcJ_DwPXAuH8jzyR46OuDHKxAsF -O model/skill_assessment_model.pkl
 gdown --id 1LGuOcb2Ecq5NSNgNO2vLsh8pTWS_3MgW -O model/rf_model.pkl
 gdown --id 17YV0kR2FCCgcp2vuBfELMYg9hTPSMfa9 -O model/scaler.pkl
 
-
-
-
-
-
-
-
-# Collect static files (Django)
+# (Optional) Collect static files (Django)
 python manage.py collectstatic --noinput
