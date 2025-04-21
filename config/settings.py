@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from dotenv import load_dotenv
 load_dotenv()
+import dj_database_url
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -28,7 +30,9 @@ SECRET_KEY = 'django-insecure-u5gxde_)u!0@lu2qu4cmdn!hzja7d97bmd_sf4o%o7j-kyn^o^
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'https://backend-5fy2.onrender.com'
+]
 
 
 # Application definition
@@ -99,18 +103,9 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ecgs_db',        # your Render database name
-        'USER': 'ecgs_db_user',               # your Render database user
-        'PASSWORD': 'fpHEByzGZHlLVddMGcbWQCo8OYRBClKD',       # your Render password
-        'HOST': 'dpg-d02fh6re5dus73bo2030-a ',     
-        'PORT': '5432',      
-        'OPTIONS': {
-            'sslmode': 'require',
-                      }              # usually 5432
+    'default': dj_database_url.config(default=os.getenv('postgresql://ecgs_db_user:fpHEByzGZHlLVddMGcbWQCo8OYRBClKD@dpg-d02fh6re5dus73bo2030-a/ecgs_db'))
     }
-}
+
 
 
 # Password validation
