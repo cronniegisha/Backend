@@ -1,0 +1,489 @@
+skill_id,skill_name,skill_type,skill_description
+117,Content Management,Management,The process of managing and optimizing digital content.
+64,Healthcare IT,Technical,The use of technology in managing healthcare systems and data.
+144,Data Analysis,Analytical,The ability to analyze and interpret data to make informed decisions.
+53,Emotional Intelligence,Soft,"The ability to recognize, understand, and manage your own emotions, and the emotions of others."
+35,UI/UX Design,Creative,The ability to design user interfaces and optimize user experiences.
+69,Human Resource Management,Management,A professional responsible for managing employee relations and organizational development.
+95,Conflict Resolution,Soft,The ability to resolve disputes and conflicts in a constructive manner.
+89,Linguistics and Language Analysis,Analytical,"A professional who studies language and its structure, development, and usage."
+74,Negotiation,Soft,The ability to negotiate with others to reach mutually beneficial agreements.
+52,Problem Solving,Analytical,The ability to approach complex problems and find effective solutions.
+144,Software Testing,Technical,The process of evaluating software to ensure it meets specified requirements.
+106,Supply Chain Management,Management,The management of the flow of goods and services from origin to consumer.
+21,Leadership,Management,"The ability to lead, motivate, and guide a team towards achieving goals."
+123,Music Performance and Production,Creative,"An artist who creates and performs music, including composing and producing."
+11,Digital Transformation,Management,The integration of digital technology into all areas of business.
+36,Python Programming,Technical,The ability to write Python code for various applications.
+62,Building Maintenance,Soft,A person responsible for cleaning and maintaining the cleanliness of buildings and spaces.
+77,Health Informatics,Technical,The use of technology to manage and analyze health data.
+8,Health Informatics,Technical,The use of technology to manage and analyze health data.
+58,Healthcare Management,Management,A professional responsible for managing healthcare systems and teams.
+64,SQL Databases,Technical,The ability to write SQL queries to interact with databases.
+37,Time Management,Soft,The ability to manage and prioritize time effectively.
+67,Robotics,Technical,"The design, construction, and operation of robots."
+139,Presentation Skills,Soft,The ability to effectively present information to an audience.
+140,Legal Services,Management,A legal professional who represents clients in legal matters and court proceedings.
+146,Change Management,Management,The ability to manage and facilitate organizational changes effectively.
+122,Communication,Soft,The ability to effectively communicate ideas and information.
+148,Customer Service,Soft,A person who serves food and beverages to customers in a restaurant or other establishment.
+117,Business Analytics,Analytical,The ability to use data analysis to improve business decision-making.
+116,Leadership,Management,"The ability to lead, motivate, and guide a team towards achieving goals."
+17,Building Maintenance,Soft,A person responsible for cleaning and maintaining the cleanliness of buildings and spaces.
+107,Digital Marketing,Management,The use of digital channels to promote products or services.
+95,Negotiation,Soft,The ability to negotiate with others to reach mutually beneficial agreements.
+23,Healthcare Management,Management,A professional responsible for managing healthcare systems and teams.
+48,Academic Teaching,Soft,An academic professional who teaches courses in a college or university.
+54,Time Management,Soft,The ability to manage and prioritize time effectively.
+43,Linguistics and Language Analysis,Analytical,"A professional who studies language and its structure, development, and usage."
+146,Software Testing,Technical,The process of evaluating software to ensure it meets specified requirements.
+136,Creative Thinking,Creative,The ability to think outside the box and come up with innovative solutions.
+65,Python Programming,Technical,The ability to write Python code for various applications.
+79,Customer Relationship Management (CRM),Management,The use of technology to manage and analyze customer interactions.
+99,Music Performance and Production,Creative,"An artist who creates and performs music, including composing and producing."
+44,Financial Planning,Analytical,The ability to manage and plan finances effectively for long-term success.
+120,Plumbing Systems,Technical,A tradesperson responsible for installing and maintaining piping systems.
+101,E-Commerce Strategy,Management,The ability to develop strategies for selling products and services online.
+1,Machine Learning,Technical,The ability to apply algorithms and statistical models to build predictive models.
+79,Creative Thinking,Creative,The ability to think outside the box and come up with innovative solutions.
+98,Game Development,Creative,"The process of designing, programming, and testing video games."
+102,Emotional Intelligence,Soft,"The ability to recognize, understand, and manage your own emotions, and the emotions of others."
+59,Creative Thinking,Creative,The ability to think outside the box and come up with innovative solutions.
+26,Search Engine Optimization (SEO),Analytical,The process of improving website visibility on search engines.
+150,Mobile App Development,Technical,The creation of software applications for mobile devices.
+62,Cyber Forensics,Technical,The ability to investigate and analyze digital evidence.
+21,Communication,Soft,The ability to effectively communicate ideas and information.
+22,Social Media Marketing,Management,The use of social media platforms to promote products or services.
+139,Music Performance and Production,Creative,"An artist who creates and performs music, including composing and producing."
+138,Product Development,Management,"The process of designing, developing, and bringing new products to market."
+16,Financial Planning,Analytical,The ability to manage and plan finances effectively for long-term success.
+44,Renewable Energy,Technical,The ability to develop and utilize energy from renewable resources.
+114,Legal Services,Management,A legal professional who represents clients in legal matters and court proceedings.
+49,Digital Transformation,Management,The integration of digital technology into all areas of business.
+85,Project Management,Management,"The ability to plan, execute, and oversee projects from start to finish."
+87,Customer Relationship Management (CRM),Management,The use of technology to manage and analyze customer interactions.
+7,Public Speaking,Soft,The ability to speak confidently in front of an audience.
+107,Quantum Computing,Technical,The ability to work with computers that use quantum-mechanical phenomena.
+69,SQL Databases,Technical,The ability to write SQL queries to interact with databases.
+32,Cybersecurity,Technical,"The ability to protect networks, devices, and data from cyber threats."
+11,Performance Arts,Creative,"An individual who performs in films, television shows, theater, or other media."
+20,Marketing Strategy,Management,"The ability to plan, execute, and analyze marketing campaigns."
+22,Conflict Resolution,Soft,The ability to resolve disputes and conflicts in a constructive manner.
+33,Content Management,Management,The process of managing and optimizing digital content.
+3,Robotics,Technical,"The design, construction, and operation of robots."
+52,Software Testing,Technical,The process of evaluating software to ensure it meets specified requirements.
+52,Game Development,Creative,"The process of designing, programming, and testing video games."
+5,Event Planning,Management,"The ability to plan, organize, and execute events successfully."
+145,Academic Teaching,Soft,An academic professional who teaches courses in a college or university.
+129,Visual Arts,Creative,An artist who creates visual artwork using paint and other materials.
+86,Academic Teaching,Soft,An academic professional who teaches courses in a college or university.
+69,Data Visualization,Analytical,The ability to present data in visual formats like charts and graphs.
+43,Data Visualization,Analytical,The ability to present data in visual formats like charts and graphs.
+54,Healthcare Management,Management,A professional responsible for managing healthcare systems and teams.
+22,Cyber Forensics,Technical,The ability to investigate and analyze digital evidence.
+5,Geology,Analytical,"A scientist who studies the Earth's structure, materials, and processes."
+101,Change Management,Management,The ability to manage and facilitate organizational changes effectively.
+146,Game Development,Creative,"The process of designing, programming, and testing video games."
+109,Visual Arts,Creative,An artist who creates visual artwork using paint and other materials.
+79,Human Resource Management,Management,A professional responsible for managing employee relations and organizational development.
+72,UI/UX Design,Creative,The ability to design user interfaces and optimize user experiences.
+18,Artificial Intelligence,Technical,The ability to create systems that mimic human intelligence processes.
+141,Accounting,Analytical,A financial professional who manages financial records and prepares reports.
+24,Brand Management,Management,The process of maintaining and improving a company's brand image.
+27,Cybersecurity,Technical,"The ability to protect networks, devices, and data from cyber threats."
+1,Customer Experience,Soft,The process of ensuring that customers have a positive experience with a company.
+136,SQL Databases,Technical,The ability to write SQL queries to interact with databases.
+84,Game Development,Creative,"The process of designing, programming, and testing video games."
+37,Linguistics and Language Analysis,Analytical,"A professional who studies language and its structure, development, and usage."
+71,Investment Strategy,Analytical,The development of plans for managing investments to maximize returns.
+93,Data Analysis,Analytical,The ability to analyze and interpret data to make informed decisions.
+46,Data Privacy,Analytical,The protection of personal information from unauthorized access.
+104,Linguistics and Language Analysis,Analytical,"A professional who studies language and its structure, development, and usage."
+13,Marketing Strategy,Management,"The ability to plan, execute, and analyze marketing campaigns."
+61,Cloud Computing,Technical,The ability to manage and utilize cloud infrastructure and services.
+30,Presentation Skills,Soft,The ability to effectively present information to an audience.
+103,SQL Databases,Technical,The ability to write SQL queries to interact with databases.
+105,Cloud Computing,Technical,The ability to manage and utilize cloud infrastructure and services.
+14,Sustainability Practices,Analytical,The ability to develop practices that reduce environmental impact.
+40,Video Production,Creative,"The process of creating videos for entertainment, education, or promotion."
+30,Financial Planning,Analytical,The ability to manage and plan finances effectively for long-term success.
+30,UI/UX Design,Creative,The ability to design user interfaces and optimize user experiences.
+68,Cyber Forensics,Technical,The ability to investigate and analyze digital evidence.
+11,Change Management,Management,The ability to manage and facilitate organizational changes effectively.
+64,Data Analysis,Analytical,The ability to analyze and interpret data to make informed decisions.
+145,Construction Management,Technical,A professional responsible for constructing buildings and other physical structures.
+11,Game Development,Creative,"The process of designing, programming, and testing video games."
+94,Digital Marketing,Management,The use of digital channels to promote products or services.
+10,Negotiation,Soft,The ability to negotiate with others to reach mutually beneficial agreements.
+60,Search Engine Optimization (SEO),Analytical,The process of improving website visibility on search engines.
+11,E-Commerce Strategy,Management,The ability to develop strategies for selling products and services online.
+32,Accounting,Analytical,A financial professional who manages financial records and prepares reports.
+18,Investment Strategy,Analytical,The development of plans for managing investments to maximize returns.
+65,IT Security and Efficiency,Analytical,A professional who evaluates and ensures the security and efficiency of IT systems.
+89,Legal Compliance,Analytical,The ability to ensure that a business adheres to laws and regulations.
+90,Sustainability Practices,Analytical,The ability to develop practices that reduce environmental impact.
+52,Business Analytics,Analytical,The ability to use data analysis to improve business decision-making.
+42,Presentation Skills,Soft,The ability to effectively present information to an audience.
+62,Cloud Security,Technical,The ability to protect cloud-based infrastructure and data from security threats.
+81,Blockchain Development,Technical,The development of decentralized and distributed ledgers for transactions.
+115,Cybersecurity,Technical,"The ability to protect networks, devices, and data from cyber threats."
+131,Tax Auditing,Analytical,A professional who inspects tax records and financial statements for accuracy.
+146,Performance Arts,Creative,"An individual who performs in films, television shows, theater, or other media."
+96,Data Privacy,Analytical,The protection of personal information from unauthorized access.
+147,Visual Arts,Creative,An artist who creates visual artwork using paint and other materials.
+71,Community Support,Soft,A professional who helps individuals and families in need of assistance and support.
+114,Software Testing,Technical,The process of evaluating software to ensure it meets specified requirements.
+9,Culinary Arts,Creative,A culinary professional responsible for preparing food and managing kitchen operations.
+14,Negotiation,Soft,The ability to negotiate with others to reach mutually beneficial agreements.
+101,Robotics,Technical,"The design, construction, and operation of robots."
+72,Brand Management,Management,The process of maintaining and improving a company's brand image.
+38,Negotiation Skills,Soft,The ability to successfully negotiate agreements and resolve conflicts.
+108,Negotiation,Soft,The ability to negotiate with others to reach mutually beneficial agreements.
+66,Customer Experience,Soft,The process of ensuring that customers have a positive experience with a company.
+91,Mobile App Development,Technical,The creation of software applications for mobile devices.
+90,Robotics,Technical,"The design, construction, and operation of robots."
+98,Performance Arts,Creative,"An individual who performs in films, television shows, theater, or other media."
+1,System Maintenance,Technical,A professional responsible for maintaining and managing IT systems and servers.
+10,Communication,Soft,The ability to effectively communicate ideas and information.
+9,Problem Solving,Analytical,The ability to approach complex problems and find effective solutions.
+15,System Maintenance,Technical,A professional responsible for maintaining and managing IT systems and servers.
+29,Customer Experience,Soft,The process of ensuring that customers have a positive experience with a company.
+201,Agile Project Management,Management,The practice of managing projects using agile methodologies for adaptive planning and continuous improvement.
+202,Kubernetes Administration,Technical,The ability to deploy, scale, and manage containerized applications using Kubernetes.
+203,Emotional Resilience,Soft,The ability to bounce back from adversity and maintain mental well-being under pressure.
+204,Data Engineering,Analytical,The process of designing and maintaining systems for collecting, storing, and analyzing data.
+205,Storyboard Design,Creative,The skill of creating visual storytelling frameworks for animation, film, or marketing.
+206,DevOps Automation,Technical,The ability to automate development and operations tasks to enhance software delivery.
+207,Team Collaboration,Soft,The ability to work effectively with others to achieve shared goals.
+208,Strategic Planning,Management,The process of defining strategy and making decisions to allocate resources for achieving objectives.
+209,Natural Language Processing (NLP),Technical,The ability to build systems that understand and generate human language.
+210,User Research,Analytical,The process of studying target users to understand their needs and behaviors.
+211,Creative Copywriting,Creative,The ability to craft compelling written content for marketing and branding.
+212,Virtual Reality Development,Technical,The creation of immersive virtual environments using VR technologies.
+213,Conflict Mediation,Soft,The skill of resolving disputes through neutral facilitation and negotiation techniques.
+214,Financial Forecasting,Analytical,The process of predicting future financial trends using data and analysis.
+215,Scriptwriting,Creative,The craft of writing screenplays or scripts for media productions.
+216,Lean Management,Management,A methodology that focuses on reducing waste and improving process efficiency.
+217,Penetration Testing,Technical,The skill of ethically testing systems to identify security vulnerabilities.
+218,Customer Journey Mapping,Analytical,The visualization of customer interactions to improve user experience.
+219,Typography Design,Creative,The art and technique of arranging type to make written content legible and visually appealing.
+220,Organizational Development,Management,The practice of improving organizational effectiveness through change strategies.
+221,Git Version Control,Technical,The use of Git for source code management and team collaboration.
+222,Conflict De-escalation,Soft,The ability to calm tense situations and prevent further conflict.
+223,Behavioral Analysis,Analytical,The study of human behavior patterns for decision-making and prediction.
+224,Character Animation,Creative,The art of bringing animated characters to life using movement and expression.
+225,Risk Management,Management,The identification and mitigation of potential risks that may affect project outcomes.
+226,Load Testing,Technical,The practice of testing software under heavy usage conditions to ensure stability.
+227,Presentation Design,Creative,The creation of visually engaging slides and materials for public speaking.
+228,Critical Thinking,Soft,The ability to objectively analyze and evaluate information to form a judgment.
+229,Operations Research,Analytical,The use of mathematical methods to make better organizational decisions.
+230,UI Prototyping,Creative,The skill of creating interactive mockups for user interface testing.
+231,Recruitment Strategy,Management,Planning and executing effective hiring processes.
+232,Database Optimization,Technical,The process of tuning database performance for faster queries and reduced resource use.
+233,Stress Management,Soft,The ability to effectively handle stress to maintain personal and professional performance.
+234,Churn Analysis,Analytical,The evaluation of customer loss to improve retention strategies.
+235,Sound Design,Creative,The creation of audio elements for media, games, and experiences.
+236,Team Leadership,Management,The ability to guide and inspire a group toward achieving objectives.
+237,CI/CD Implementation,Technical,The automation of code integration and deployment processes.
+238,Market Segmentation,Analytical,The process of dividing a market into distinct groups for targeted marketing.
+239,Storyboarding,Creative,Creating visual sequences to outline narratives and ideas.
+240,Performance Metrics Analysis,Analytical,Evaluating KPIs to assess and improve individual or team performance.
+241,Code Review,Technical,Evaluating source code to ensure quality, consistency, and security.
+242,Cross-functional Team Management,Management,Leading teams composed of members from various departments.
+243,Empathy,Soft,The ability to understand and share the feelings of another.
+244,Data Modeling,Analytical,The design of data structures to represent information effectively.
+245,UI Animation,Creative,Creating animated elements for better user interface feedback and experience.
+246,Workforce Planning,Management,Strategically managing workforce size and skills for organizational needs.
+247,Microservices Architecture,Technical,Designing systems as a collection of loosely coupled services.
+248,Body Language Interpretation,Soft,Understanding nonverbal cues in human communication.
+249,Revenue Analysis,Analytical,Analyzing income streams to assess business performance.
+250,Digital Illustration,Creative,Creating artwork using digital tools for media, games, and publishing.
+251,Data Security Compliance,Technical,Ensuring systems and practices adhere to data protection regulations like GDPR or HIPAA.
+252,UX Audit,Analytical,Evaluating user experience of digital products to identify usability issues.
+253,Technical Documentation,Technical,Creating manuals and documentation for software, APIs, or systems.
+254,Brainstorming Facilitation,Soft,Guiding idea generation sessions to solve problems or spark innovation.
+255,3D Modeling,Creative,Designing three-dimensional digital objects for games, films, or engineering.
+256,Revenue Forecasting,Analytical,Predicting future revenue based on historical and market data.
+257,Customer Empathy,Soft,Understanding and addressing customer needs and emotions effectively.
+258,Kanban Methodology,Management,Implementing visual workflow systems to improve process efficiency.
+259,Security Auditing,Technical,Assessing system security to identify vulnerabilities and risks.
+260,Persona Development,Analytical,Creating user archetypes to guide product and marketing decisions.
+261,Video Editing,Creative,Manipulating and arranging video footage to create compelling content.
+262,Product Backlog Management,Management,Organizing and prioritizing features and tasks for product development.
+263,Incident Response,Technical,Managing and mitigating the impact of security breaches or outages.
+264,Survey Design,Analytical,Creating effective surveys to collect meaningful data.
+265,Brand Identity Design,Creative,Creating cohesive visuals and messaging to define a brand.
+266,Budget Planning,Management,Developing financial plans to manage resources effectively.
+267,API Integration,Technical,Connecting software systems via application programming interfaces.
+268,Workshop Facilitation,Soft,Leading interactive sessions for skill-building, planning, or ideation.
+269,Data Storytelling,Analytical,Presenting data insights through engaging narratives and visuals.
+270,Digital Painting,Creative,Creating artistic visuals using digital tools and software.
+271,Performance Evaluation,Management,Assessing employee output and growth through reviews and metrics.
+272,Containerization,Technical,Packaging applications and dependencies into containers for portability and consistency.
+273,Presentation Skills,Soft,Delivering clear and engaging talks or pitches to an audience.
+274,Cohort Analysis,Analytical,Evaluating user behavior over time by grouping based on shared characteristics.
+275,Concept Art,Creative,Designing visual representations of ideas for films, games, or products.
+276,Change Management,Management,Planning and implementing organizational changes effectively.
+277,CI/CD Pipeline Monitoring,Technical,Tracking automated build and deployment processes for stability.
+278,Data Cleaning,Analytical,Detecting and correcting errors or inconsistencies in datasets.
+279,Typography Animation,Creative,Animating text for video or interactive experiences.
+280,Goal Setting,Soft,Defining measurable objectives to guide personal or professional development.
+281,Service Level Agreement (SLA) Management,Management,Defining and managing performance expectations in service contracts.
+282,Machine Learning Model Evaluation,Technical,Assessing ML model performance using metrics like accuracy or F1-score.
+283,Analytical Reasoning,Analytical,Using logic and critical thinking to solve complex problems.
+284,Motion Graphics,Creative,Designing animated graphic content for visual media.
+285,Meeting Facilitation,Soft,Leading productive and inclusive team discussions.
+286,OKR Planning,Management,Defining objectives and key results for organizational alignment.
+287,Web Application Security,Technical,Protecting web apps from threats like XSS, SQL injection, and CSRF.
+288,Market Research,Analytical,Gathering and analyzing data to understand consumer needs and market trends.
+289,Digital Asset Management,Creative,Organizing and maintaining digital files for branding, design, or media use.
+290,Conflict Resolution,Soft,Addressing and resolving interpersonal disagreements constructively.
+291,Agile Retrospectives,Management,Running sessions to reflect and improve after project sprints.
+292,Database Normalization,Technical,Structuring databases to reduce redundancy and improve integrity.
+293,Root Cause Analysis,Analytical,Identifying the underlying cause of a problem.
+294,Color Theory,Creative,Understanding how colors interact and affect perception.
+295,Networking,Soft,Building and maintaining professional relationships.
+296,Team Budget Management,Management,Planning and controlling a team’s financial resources.
+297,Software Container Orchestration,Technical,Managing containers at scale with tools like Kubernetes.
+298,Experiment Design,Analytical,Creating tests to validate hypotheses using scientific methods.
+299,UI Color Design,Creative,Selecting effective color schemes for interface design.
+300,Stakeholder Communication,Soft,Effectively engaging and informing stakeholders about project progress.
+301,Conflict De-escalation,Soft,Using communication techniques to calm tense situations, especially in law enforcement.
+302,Lesson Planning,Management,Designing structured educational activities to achieve learning objectives.
+303,Child Engagement,Soft,Using techniques to hold young children's attention and foster learning.
+304,Situational Awareness,Technical,Assessing surroundings to identify potential threats or risks in real-time.
+305,Lecture Delivery,Soft,Presenting academic content clearly and engagingly to students.
+306,Classroom Management,Management,Maintaining order and a positive learning environment in educational settings.
+307,Floral Arrangement,Creative,Designing flower compositions for events, businesses, and personal use.
+308,Skin Condition Diagnosis,Technical,Identifying dermatological issues based on symptoms and visual examination.
+309,Crowd Control,Technical,Managing large groups in public spaces for safety and order.
+310,Curriculum Design,Analytical,Planning course content to align with educational goals and standards.
+311,Creative Play Facilitation,Soft,Encouraging imaginative and physical play in early childhood education.
+312,Surveillance Monitoring,Technical,Observing security feeds and systems to detect suspicious activities.
+313,Medical History Analysis,Analytical,Reviewing patient records to inform treatment plans and diagnoses.
+314,Customer Floral Consultation,Soft,Assisting clients in choosing floral arrangements for events or decor.
+315,Crime Scene Documentation,Technical,Recording evidence and scene details accurately in investigations.
+316,Assessment Grading,Analytical,Evaluating student work against learning objectives and rubrics.
+317,Parent Communication,Soft,Discussing student progress and concerns effectively with parents or guardians.
+318,Emergency Response Coordination,Management,Directing appropriate actions during critical incidents or disasters.
+319,Skin Treatment Planning,Technical,Recommending treatments and routines for dermatological care.
+320,Event Floral Design,Creative,Creating floral displays tailored for weddings, parties, and corporate events.
+321,Interrogation Techniques,Technical,Conducting interviews to gather truthful information during investigations.
+322,Online Teaching Tools,Technical,Using platforms like Google Classroom or Zoom for remote education.
+323,Storytelling for Children,Soft,Engaging young learners with interactive and age-appropriate storytelling.
+324,Patrol Reporting,Technical,Logging activities and incidents during security or police patrols.
+325,Diagnostic Dermatopathology,Technical,Analyzing skin samples under microscopes for disease identification.
+326,Seasonal Decoration Design,Creative,Creating themed floral or decorative displays for holidays or seasons.
+327,Legal Procedure Knowledge,Technical,Understanding laws and court procedures relevant to enforcement roles.
+328,Educational Psychology,Analytical,Understanding how students learn and applying strategies for effective teaching.
+329,Behavior Observation,Analytical,Monitoring and interpreting actions for developmental or safety concerns.
+330,Alarm Response Protocol,Technical,Responding effectively to triggered security systems or alerts.
+331,Acne Treatment Specialization,Technical,Providing targeted care and products for managing acne.
+332,Floral Supply Chain Management,Management,Managing inventory and procurement for flower shops or event planners.
+333,Report Writing (Law Enforcement),Technical,Creating detailed and objective incident or case reports.
+334,Learning Assessment Design,Analytical,Creating tests or evaluations to measure learning outcomes.
+335,Child Safety Protocols,Management,Ensuring safety measures are followed in classrooms or daycare environments.
+336,Security Patrol Planning,Management,Scheduling and mapping routine patrols for safety and coverage.
+337,Cosmetic Dermatology Procedures,Technical,Performing non-invasive skin treatments like chemical peels or Botox.
+338,Color Coordination (Floral Design),Creative,Choosing harmonious color palettes for arrangements.
+339,Testimony Presentation,Soft,Providing accurate and professional testimony in legal settings.
+340,Special Needs Instruction,Soft,Adapting lessons and methods for learners with disabilities.
+341,Play-Based Learning,Creative,Using play as a medium for cognitive and social development.
+342,Intrusion Detection Systems,Technical,Monitoring tools for identifying unauthorized access.
+343,Allergy Diagnosis,Technical,Identifying allergic skin reactions through examination and tests.
+344,Sympathy Flower Arrangement,Creative,Designing respectful floral tributes for funerals and memorials.
+345,Traffic Control,Technical,Managing and directing vehicle and pedestrian flow for safety and efficiency.
+346,Academic Advising,Soft,Guiding students in course and career planning.
+347,Sensory Learning Strategies,Analytical,Incorporating multiple senses into teaching to aid retention and understanding.
+348,Night Surveillance Protocol,Technical,Monitoring premises after hours using tools and check-in systems.
+349,Pediatric Skin Care,Technical,Diagnosing and treating skin conditions in children and infants.
+350,Wedding Bouquet Crafting,Creative,Designing and assembling customized bridal floral arrangements.
+351,Food Plating,Creative,Arranging food in an appealing and artistic way for presentation.
+352,Electrical Circuit Design,Technical,Planning and laying out wiring systems for buildings or equipment.
+353,Historical Narration,Soft,Telling engaging stories about historical sites or events during tours.
+354,Emergency Medical Response,Technical,Providing first aid and life-saving treatment in emergencies.
+355,Interview Techniques (Journalism),Technical,Conducting effective and ethical interviews for news or articles.
+356,Translation Accuracy,Technical,Converting written or spoken content between languages with precision.
+357,Recipe Development,Creative,Creating original food recipes with flavor balance and nutritional value.
+358,Wiring Safety Protocols,Technical,Following procedures to ensure safe electrical installations.
+359,Cultural Sensitivity,Soft,Respecting and adapting to diverse cultural norms and traditions.
+360,CPR Certification,Technical,Performing cardiopulmonary resuscitation according to health standards.
+361,Investigative Writing,Analytical,Researching and writing detailed reports or stories on complex issues.
+362,Simultaneous Interpretation,Technical,Translating speech in real-time during conversations or conferences.
+363,Knife Handling Techniques,Technical,Using knives safely and efficiently in food preparation.
+364,Electrical Load Calculation,Analytical,Determining the power requirements for safe circuit design.
+365,Public Speaking (Tourism),Soft,Speaking confidently and clearly in front of groups during tours.
+366,Triage Assessment,Technical,Prioritizing patients based on severity of injury or illness.
+367,Fact-Checking,Analytical,Verifying information accuracy before publication.
+368,Localization Adaptation,Technical,Adjusting content to fit the cultural context of different audiences.
+369,Pastry Decoration,Creative,Adding visual design elements to cakes, pies, and other pastries.
+370,Blueprint Reading (Electrical),Technical,Interpreting electrical schematics and diagrams accurately.
+371,Multilingual Storytelling,Soft,Sharing stories in different languages for diverse audiences.
+372,Defibrillator Operation,Technical,Using AEDs to deliver shocks in cardiac arrest situations.
+373,Photojournalism,Creative,Capturing and editing images that tell a news story visually.
+374,Voiceover Translation,Technical,Recording spoken translations for videos or audio content.
+375,Ingredient Substitution Knowledge,Analytical,Knowing suitable alternatives for cooking ingredients.
+376,Circuit Testing,Technical,Using tools to ensure electrical systems are functioning correctly.
+377,Customer Interaction (Tours),Soft,Engaging and addressing tourist questions and feedback.
+378,Blood Pressure Monitoring,Technical,Accurately measuring and interpreting blood pressure levels.
+379,Headline Writing,Creative,Creating compelling and concise headlines to attract readers.
+380,Technical Terminology Translation,Technical,Converting specialized terms accurately between languages.
+381,Food Safety Standards,Technical,Applying hygiene practices and regulations in kitchens.
+382,Solar Power Installation,Technical,Installing and maintaining solar panel systems for electricity generation.
+383,Route Planning (Tourism),Analytical,Organizing efficient and scenic travel routes for tours.
+384,Wound Dressing,Technical,Applying sterile bandages and treating minor injuries safely.
+385,Editorial Judgment,Analytical,Selecting and prioritizing content based on relevance and importance.
+386,Transcription,Technical,Converting audio recordings into written text accurately.
+387,Meat Preparation Techniques,Technical,Cutting and seasoning meat correctly for various recipes.
+388,Grounding Systems Installation,Technical,Ensuring electrical systems are safely grounded.
+389,Foreign Language Pronunciation,Technical,Accurately speaking non-native languages with proper intonation.
+390,Vital Signs Interpretation,Analytical,Understanding and reacting to body readings like temperature and pulse.
+391,News Ethics,Soft,Following principles like objectivity, accuracy, and fairness in reporting.
+392,Subtitling,Technical,Adding time-synced translated text to video content.
+393,Catering Logistics,Management,Organizing food, transport, and timing for large-scale events.
+394,Electrical Code Compliance,Technical,Ensuring installations meet national or local regulations.
+395,Story Adaptation,Creative,Rewriting stories to suit different cultures, age groups, or platforms.
+396,Medical Equipment Sterilization,Technical,Cleaning and preparing tools for safe reuse.
+397,Data Visualization (Journalism),Technical,Creating graphics and charts that simplify complex data.
+398,Multimedia Translation,Technical,Adapting videos, games, or apps for use in another language or region.
+399,Ingredient Sourcing,Management,Finding reliable suppliers for fresh and specialty ingredients.
+400,Lighting Installation,Technical,Setting up indoor or outdoor lighting systems safely and effectively.
+501,Forensic Science,Technical,The application of scientific methods to solve crimes and examine evidence.
+502,UX Research,Analytical,The study of user behaviors and needs to inform product design.
+503,Drone Operation,Technical,The ability to operate and manage unmanned aerial vehicles (drones).
+504,Fashion Design,Creative,The art of applying design and aesthetics to clothing and accessories.
+505,Event Hosting,Soft,The ability to engage and manage events as an emcee or host.
+506,Ethical Hacking,Technical,Testing computer systems to identify and fix security vulnerabilities.
+507,Animal Training,Soft,The ability to train animals for behavior, performance, or service work.
+508,Interior Decorating,Creative,Enhancing interior spaces to achieve a desired aesthetic or function.
+509,3D Modeling,Technical,The creation of three-dimensional digital representations of objects.
+510,Voice Acting,Creative,The art of performing voice-overs for characters, commercials, or narration.
+511,Cryptography,Technical,The practice of securing information by encoding it.
+512,Budget Forecasting,Analytical,The process of estimating future financial outcomes for planning.
+513,Food Photography,Creative,Styling and photographing food for marketing or publishing purposes.
+514,Art Therapy,Soft,The use of artistic expression to improve mental health and well-being.
+515,Jewelry Design,Creative,The art of designing and crafting wearable decorative items.
+516,Crisis Communication,Management,Strategic communication during emergencies or brand-threatening events.
+517,Sports Analytics,Analytical,The application of data analysis to improve sports performance and decision-making.
+518,Smart Home Installation,Technical,The setup and maintenance of connected home devices and systems.
+519,Tattoo Artistry,Creative,The skill of designing and applying tattoos professionally.
+520,Voiceover Editing,Technical,The process of refining recorded voice content for media use.
+521,Wildlife Conservation,Analytical,The practice of protecting endangered species and natural habitats.
+522,Sommelier Expertise,Analytical,The knowledge and tasting ability to recommend and pair wines.
+523,App Store Optimization (ASO),Technical,Improving mobile app visibility in app stores.
+524,Aromatherapy,Soft,Using essential oils to promote well-being and health.
+525,Game Level Design,Creative,Designing stages and challenges for video games.
+526,Parkour Training,Physical,The discipline of moving through urban environments efficiently using jumps and climbs.
+527,Digital Illustration,Creative,The creation of visual art using digital tools and software.
+528,Podcast Production,Technical,Planning, recording, and editing audio content for podcast distribution.
+529,Mineral Exploration,Technical,Locating and analyzing minerals for extraction.
+530,Disaster Relief Coordination,Management,Organizing resources and efforts in response to emergencies.
+531,Cyber Law Knowledge,Analytical,Understanding legal frameworks surrounding digital technology and the internet.
+532,Public Health Education,Soft,Promoting health awareness and preventive care to communities.
+533,Landscape Architecture,Creative,Designing outdoor spaces that are both functional and aesthetically pleasing.
+534,Aquaponics Farming,Technical,Combining aquaculture and hydroponics for sustainable food production.
+535,Leather Crafting,Creative,Creating goods such as bags, shoes, and accessories from leather.
+536,Forex Trading,Analytical,Buying and selling currencies in the foreign exchange market.
+537,Quantum Computing,Technical,Working with advanced computation based on quantum theory.
+538,Maritime Navigation,Technical,Navigating ships and boats safely through water routes.
+539,Biostatistics,Analytical,Applying statistical techniques to biological and health-related research.
+540,Makeup Artistry,Creative,Applying cosmetics for various purposes such as fashion, film, or events.
+541,Mental Health Counseling,Soft,Providing therapeutic support to individuals dealing with emotional or psychological issues.
+542,Drone Piloting,Technical,Operating drones for purposes like photography, surveillance, or delivery.
+543,Antique Appraisal,Analytical,Evaluating the value and authenticity of historical artifacts and antiques.
+544,Zoological Research,Analytical,Studying animals and their behavior, habitats, and health.
+545,Mobile UI/UX Design,Creative,Designing user-friendly interfaces for mobile applications.
+546,Event Security Management,Management,Overseeing security measures at public or private events.
+547,Perfume Blending,Creative,Formulating unique fragrances using chemical compounds and natural ingredients.
+548,Subtitling and Captioning,Technical,Adding accurate text translations or transcriptions to video content.
+549,Sports Nutrition Planning,Analytical,Designing diet plans to enhance athletic performance and recovery.
+550,Hydrology Analysis,Analytical,Studying water movement, distribution, and quality in the environment.
+551,Coffee Roasting,Technical,Processing green coffee beans through roasting for flavor development.
+552,Costume Design,Creative,Creating outfits for theatrical performances, movies, or events.
+553,Pet Grooming,Technical,Cleaning and maintaining the hygiene and appearance of pets.
+554,Construction Estimation,Analytical,Calculating the cost and resources needed for building projects.
+555,Virtual Reality Development,Technical,Designing immersive experiences using VR technology.
+556,Political Campaign Strategy,Analytical,Planning and executing effective campaigns for political candidates.
+557,Ethnographic Research,Analytical,Studying cultures and communities through direct observation and interviews.
+558,Marine Biology,Analytical,Studying marine organisms and ecosystems to understand their behavior and impact on the environment.
+559,Health Coaching,Soft,Guiding individuals to improve their overall health through personalized advice and support.
+560,Forensic Accounting,Analytical,Investigating financial records to uncover fraud, embezzlement, or other financial crimes.
+561,Film Directing,Creative,Overseeing and managing the visual storytelling process in film production.
+562,Floral Design,Creative,Arranging flowers and other plant materials for aesthetic purposes.
+563,Environmental Science,Analytical,Studying the natural environment and the impact of human activities on it.
+564,Housekeeping Management,Management,Managing cleaning services and ensuring a high standard of cleanliness in facilities.
+565,Game Testing,Technical,Testing video games to identify bugs, glitches, or other issues before release.
+566,Interior Lighting Design,Creative,Designing lighting systems that enhance the ambiance and functionality of interior spaces.
+567,Urban Planning,Analytical,Developing plans for land use, zoning, and infrastructure in urban environments.
+568,Art Conservation,Technical,Preserving and restoring artwork to its original state for museums or collectors.
+569,Music Composition,Creative,Writing original music for various types of media such as film, TV, or theater.
+570,Geospatial Mapping,Technical,Using geographical information systems (GIS) to map and analyze spatial data.
+571,Ethical Sourcing,Analytical,Ensuring that raw materials and products are obtained in a socially responsible and environmentally sustainable manner.
+572,Book Publishing,Management,Overseeing the production, distribution, and marketing of books.
+573,Voice Acting,Creative,Providing voices for animated characters, video games, and advertisements.
+574,Cybersecurity Auditing,Analytical,Examining and assessing the security measures of IT systems to identify vulnerabilities.
+575,Wildlife Conservation,Analytical,Working to protect endangered species and their habitats through research and policy implementation.
+576,Artificial Intelligence Ethics,Analytical,Studying and developing ethical frameworks for AI systems and their use in society.
+577,Public Relations,Management,Managing the public image of individuals or organizations through media and communication.
+578,Alternative Medicine,Technical,Providing health treatments using non-traditional methods such as acupuncture, herbalism, or chiropractic care.
+579,Robotic Process Automation (RPA),Technical,Using software robots to automate repetitive and rule-based tasks.
+580,Landscape Architecture,Creative,Designing outdoor spaces, including parks, gardens, and urban developments.
+581,Public Health,Analytical,The science and practice of preventing disease and promoting health within communities.
+582,Travel Management,Management,Planning, booking, and coordinating travel arrangements for individuals or businesses.
+583,Financial Risk Management,Analytical,Identifying and mitigating financial risks to minimize losses and protect assets.
+584,Electric Vehicle Technology,Technical,Designing, building, and maintaining electric vehicles and their systems.
+585,Community Outreach,Soft,Engaging with local communities to build relationships and address their needs.
+586,Conflict Management,Soft,The ability to address, mediate, and resolve conflicts in both personal and professional settings.
+587,Transcription,Technical,Converting speech or audio recordings into written text.
+588,Personal Branding,Management,Developing a unique professional identity to stand out in the job market or industry.
+589,Event Marketing,Management,Promoting and marketing events to attract attendees and generate interest.
+590,Content Creation,Creative,Creating multimedia content, such as videos, articles, and social media posts, to engage audiences.
+591,Humanitarian Aid,Management,Providing assistance to communities affected by natural disasters, conflict, or poverty.
+592,Pharmaceutical Research,Analytical,Conducting research to develop new medications and improve existing treatments.
+593,Customer Success,Management,Ensuring customers are satisfied with a product or service by providing support and guidance.
+594,Mechatronics Engineering,Technical,Integrating mechanical, electrical, and computer engineering to design and build smart systems and devices.
+595,Security Consulting,Technical,Providing expert advice and solutions for protecting physical and digital assets.
+596,Film Editing,Creative,Editing and assembling raw footage to create a finished video product for movies or TV.
+597,Smart Home Technology,Technical,Designing and implementing systems for automating and controlling home devices through the internet.
+598,Data Mining,Analytical,Extracting useful patterns and insights from large datasets to inform business decisions.
+599,Property Management,Management,Overseeing the operation, maintenance, and leasing of properties.
+600,Marine Biology,Analytical,Studying organisms in the ocean and their ecosystems.
+601,Social Work,Soft,Helping individuals and communities improve their well-being through support, advocacy, and resources.
+602,Nonprofit Management,Management,Managing and operating nonprofit organizations, including fundraising, operations, and program development.
+603,Advertising Campaigns,Management,Developing and executing strategies for promoting products or services through various advertising channels.
+604,Clinical Research,Analytical,Conducting trials and studies to improve medical treatments and patient care.
+605,Film Production,Creative,Overseeing all aspects of the production of films, from pre-production to post-production.
+606,Data Architecture,Technical,Designing and organizing data systems to efficiently store and retrieve information.
+607,Translation,Technical,Converting written or spoken content from one language to another.
+608,Corporate Law,Legal,Providing legal advice and services to businesses regarding operations, contracts, and disputes.
+609,Supply Chain Optimization,Analytical,Improving the efficiency and effectiveness of supply chain operations through data analysis and technology.
+610,Urban Planning,Analytical,Designing and organizing urban spaces for efficient land use, transportation, and infrastructure.
+611,Cloud Architecture,Technical,Designing and managing cloud computing infrastructures and services.
+612,Research Methodology,Analytical,Designing and conducting systematic investigations to gain knowledge and solve problems.
+613,Public Relations,Management,Managing communication between an organization and its public to build a positive reputation.
+614,Renewable Resource Management,Analytical,Managing the use of renewable natural resources like wind, solar, and water.
+615,Philanthropy,Management,Engaging in charitable giving and activities to benefit society and individuals in need.
+616,Industrial Engineering,Technical,Optimizing complex systems and processes to improve efficiency and reduce waste in manufacturing.
+617,Geospatial Analysis,Analytical,Using geographic information systems (GIS) and spatial data to analyze and solve problems.
+618,Chemical Engineering,Technical,Applying principles of chemistry, physics, and biology to solve problems related to chemicals, materials, and energy.
+619,Health and Safety Management,Management,Overseeing safety standards and procedures to protect workers and the environment.
+620,AI Ethics,Analytical,The study and application of ethical principles in the development and use of artificial intelligence.
+621,Satellite Technology,Technical,Designing and managing satellites for communication, navigation, and observation purposes.
+622,Public Administration,Management,Managing public sector organizations and services to meet the needs of citizens.
+623,Salesforce Administration,Technical,Managing and customizing Salesforce systems to support business operations and customer relationships.
+624,Marine Engineering,Technical,Designing and maintaining systems and equipment used in the marine and shipping industries.
+625,Hospitality Management,Management,Overseeing the operations of hotels, resorts, and other hospitality services to ensure guest satisfaction.
+626,Cognitive Psychology,Analytical,The study of mental processes like perception, memory, and decision-making.
+627,Aerospace Engineering,Technical,Designing and building aircraft and spacecraft systems and technologies.
+628,Data Governance,Analytical,Ensuring that data is properly managed, protected, and utilized within an organization.
+629,Corporate Social Responsibility,Management,Overseeing an organization’s ethical commitment to contributing to social, environmental, and economic sustainability.
+630,Artificial Intelligence Research,Analytical,Conducting studies to advance the development and understanding of AI technologies.
+631,Automotive Engineering,Technical,Designing and developing vehicles and automotive systems.
+632,Nonprofit Fundraising,Management,Organizing and executing campaigns to raise funds for nonprofit organizations.
+633,Scientific Illustration,Creative,Creating visual representations of scientific concepts for educational or research purposes.
+634,Material Science,Analytical,The study of materials and their properties to innovate new products and improve existing ones.
+635,Blockchain Security,Technical,Implementing security measures to protect blockchain systems from cyber threats.
+636,Cognitive Behavioral Therapy,Soft,Helping individuals manage and overcome negative patterns of thinking and behavior through therapeutic methods.
+637,Actuarial Science,Analytical,Using mathematics and statistics to assess risk in insurance, finance, and other industries.
+638,Supply Chain Sustainability,Analytical,Ensuring that supply chain operations are environmentally and socially responsible.
+639,Legal Consulting,Legal,Providing specialized legal advice and strategies to businesses and organizations.

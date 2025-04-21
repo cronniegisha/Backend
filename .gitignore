@@ -1,0 +1,8 @@
+env
+model
+skill_assessment_model.pkl
+best_skill_gap_model.pkl
+skill_gap_predictor_model.pkl
+skills_encoder.pkl
+label_encoder_skill_name.pkl
+skill_assessment
