@@ -82,7 +82,7 @@ ROOT_URLCONF = 'config.urls'
 
 # Allow requests from your Next.js frontend
 CORS_ALLOWED_ORIGINS = [
-   'https://vercel.com/cassandras-projects-e493b44c/frontend'
+   'https://ecgs-frontend.vercel.app/'
     # Add your production domain when you deploy
 ]
 
