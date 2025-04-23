@@ -18,5 +18,5 @@ urlpatterns = [
     path('recommend-careers/', views.recommend_careers, name='recommend-careers'),
     path('recommend-learning/', views.recommend_learning, name='recommend-learning'),
     path('', views.home, name='home'),
-    path('predict/', views.predict_career, name='predict-career'),
+    path('predict/', views.predict_career, name='predict_career'),
 ]
