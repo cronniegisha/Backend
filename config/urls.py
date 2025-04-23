@@ -21,9 +21,6 @@ from matching.views import predict_career, home
 
 
 urlpatterns = [
-
-    path('predict/', predict_career),
-
     path('admin/', admin.site.urls),
     path('api/', include('matching.urls')),  # Replace 'your_app' with your actual Django app name
     path('', home),
