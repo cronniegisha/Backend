@@ -171,9 +171,7 @@ def predict_career(request):
         # Parse JSON data from request
         data = json.loads(request.body)
         
-        # Load models and career dataset
-        model, skills_encoder, interests_encoder, education_encoder, target_encoder, feature_names = load_models()
-        career_df = load_career_dataset()
+       
         
         # Preprocess input
         X = preprocess_input(data, skills_encoder, interests_encoder, education_encoder, feature_names)
