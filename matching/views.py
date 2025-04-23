@@ -31,37 +31,25 @@ import json
 from django.views.decorators.csrf import csrf_exempt
 from utils import generate_dynamic_learning_links
 
-# Load the career dataset
-def load_career_dataset():
-    """Load the career dataset with descriptions, required skills, and industry types"""
-    try:
-        # Update this path to where your career dataset is stored
-        career_dataset_path = os.path.join("C:/Users/SHIRAH/Desktop/Test/career_matching/career_match/career_data.csv")
-        career_df = pd.read_csv(career_dataset_path, encoding='latin1')
-        return career_df
-    except Exception as e:
-        print(f"Error loading career dataset: {str(e)}")
-        # Return a minimal dataset if the file can't be loaded
-        return pd.DataFrame({
-            'career_name': [],
-            'description': [],
-            'required_skills': [],
-            'industry_type': []
-        })
-
-# Load the ML model and encoders
-def load_models():
-    """Load all the trained models and encoders"""
+# --- load models and encoders ONCE globally ---
+try:
     model_dir = os.path.join(settings.BASE_DIR, 'matching/model')
-    
+
     model = joblib.load(os.path.join(model_dir, "rf_model.pkl"))
     skills_encoder = joblib.load(os.path.join(model_dir, "skills_encoder.pkl"))
     interests_encoder = joblib.load(os.path.join(model_dir, "interests_encoder.pkl"))
     education_encoder = joblib.load(os.path.join(model_dir, "education_encoder.pkl"))
     target_encoder = joblib.load(os.path.join(model_dir, "target_encoder.pkl"))
     feature_names = joblib.load(os.path.join(model_dir, "feature_names.pkl"))
-    
-    return model, skills_encoder, interests_encoder, education_encoder,  target_encoder, feature_names
+
+    # Load career dataset once
+    career_dataset_path = os.path.join("C:/Users/SHIRAH/Desktop/Test/career_matching/career_match/career_data.csv")
+    career_df = pd.read_csv(career_dataset_path, encoding='latin1')
+
+except Exception as e:
+    print(f"🔥 Error loading models or dataset during startup: {str(e)}")
+    model, skills_encoder, interests_encoder, education_encoder, target_encoder, feature_names, career_df = None, None, None, None, None, None, None
+
 
 # Preprocess user input for prediction
 def preprocess_input(user_input, skills_encoder, interests_encoder, education_encoder, feature_names):
@@ -170,8 +158,6 @@ def predict_career(request):
     try:
         # Parse JSON data from request
         data = json.loads(request.body)
-        
-       
         
         # Preprocess input
         X = preprocess_input(data, skills_encoder, interests_encoder, education_encoder, feature_names)
