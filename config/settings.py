@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-u5gxde_)u!0@lu2qu4cmdn!hzja7d97bmd_sf4o%o7j-kyn^o^
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'https://backend-cdie.onrender.com'
+    'backend-cdie.onrender.com'
 ]
 
 # Static files (CSS, JavaScript, Images)
