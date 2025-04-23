@@ -42,8 +42,8 @@ try:
     target_encoder = joblib.load(os.path.join(model_dir, "target_encoder.pkl"))
     feature_names = joblib.load(os.path.join(model_dir, "feature_names.pkl"))
 
-    # Load career dataset once
-    career_dataset_path = os.path.join("C:/Users/SHIRAH/Desktop/Test/career_matching/career_match/career_data.csv")
+    # Fix CSV path
+    career_dataset_path = os.path.join(model_dir, "career_data.csv")
     career_df = pd.read_csv(career_dataset_path, encoding='latin1')
 
 except Exception as e:
