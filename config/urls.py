@@ -23,6 +23,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('matching.urls')),  # Replace 'your_app' with your actual Django app name
-    path('', home),
-
+    
 ]
