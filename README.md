@@ -27,8 +27,8 @@ pip install -r requirements.txt
 ```
 
 ### 3. Backend set-up
-# Configure database in settings.py
-# Run initial setup
+#### Configure database in settings.py
+#### Run initial setup
 ```bash
 python manage.py makemigrations
 python manage.py migrate
