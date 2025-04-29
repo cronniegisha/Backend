@@ -31,7 +31,8 @@ SECRET_KEY = 'django-insecure-u5gxde_)u!0@lu2qu4cmdn!hzja7d97bmd_sf4o%o7j-kyn^o^
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    'backend-cdie.onrender.com'
+    'localhost',
+    '127.0.0.1',
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -59,11 +60,14 @@ INSTALLED_APPS = [
 
       # Third-party apps
     'rest_framework',
+    'rest_framework.authtoken',
     
     #Apps
     'matching',
 
 ]
+
+AUTH_USER_MODEL = 'matching.User'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
@@ -82,16 +86,21 @@ ROOT_URLCONF = 'config.urls'
 
 # Allow requests from your Next.js frontend
 CORS_ALLOWED_ORIGINS = [
-   'https://ecgs-frontend.vercel.app'
-    # Add your production domain when you deploy
+   'https://ecgs-frontend.vercel.app',
+   "http://localhost:3001",
+   "https://ecgs-frontend-5nzjprcwq-cassandras-projects-e493b44c.vercel.app",
+   
+   
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-   'https://ecgs-frontend.vercel.app'
+   'https://ecgs-frontend.vercel.app',
+   "http://localhost:3001",
+   "https://ecgs-frontend-5nzjprcwq-cassandras-projects-e493b44c.vercel.app",
+   
 ]
 
-# Optional: Allow credentials (cookies, authorization headers)
-CORS_ALLOW_CREDENTIALS = True
+
 
 
 TEMPLATES = [
@@ -117,8 +126,8 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('postgresql://ecgs_db_user:fpHEByzGZHlLVddMGcbWQCo8OYRBClKD@dpg-d02fh6re5dus73bo2030-a/ecgs_db'))
-    }
+    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+}
 
 
 
@@ -154,15 +163,22 @@ USE_TZ = True
 
 CORS_ALLOW_CREDENTIALS = True
 
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'matching.User'
+

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager
 from django.conf import settings
@@ -112,3 +112,77 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+# Model to represent an Interest
+class Interest(models.Model):
+    interest_name = models.CharField(max_length=255)
+    interest_description = models.TextField()
+
+    def _str_(self):
+        return self.interest_name
+# Model to represent a User Profile
+
+class Profile(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    title = models.CharField(max_length=255, null=True, blank=True)
+    bio = models.TextField(null=True, blank=True)
+    gender = models.CharField(max_length=50, null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    education_level = models.CharField(max_length=100, null=True, blank=True)
+    experience = models.TextField(null=True, blank=True)
+    career_preferences = models.TextField(null=True, blank=True)
+    location = models.CharField(max_length=255, null=True, blank=True)
+    phone = models.CharField(max_length=15, null=True, blank=True)
+    website = models.URLField(null=True, blank=True)
+
+    def _str_(self):
+        return f"Profile of {self.user.username}"
+
+# Model to represent Education information
+class Education(models.Model):
+    profile = models.ForeignKey('matching.Profile', on_delete=models.CASCADE)
+    institution_name = models.CharField(max_length=255)
+    degree = models.CharField(max_length=255)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    description = models.TextField()
+
+    def _str_(self):
+        return f"{self.degree} from {self.institution_name}"
+
+
+# Model to represent User Profile Skills (Many-to-Many relationship)
+class UserProfileSkill(models.Model):
+    profile = models.ForeignKey('matching.Profile', on_delete=models.CASCADE)
+    skill = models.ForeignKey(Skill, on_delete=models.CASCADE)
+
+    def _str_(self):
+        return f"{self.profile.user.username} - {self.skill.skill_name}"
+
+
+# Model to represent User Profile Interests (Many-to-Many relationship)
+class UserProfileInterest(models.Model):
+    profile = models.ForeignKey('matching.Profile', on_delete=models.CASCADE)
+    interest = models.ForeignKey(Interest, on_delete=models.CASCADE)
+
+    def _str_(self):
+        return f"{self.profile.user.username} - {self.interest.interest_name}"
+
+
+class UserActivity(models.Model):
+    session_id = models.CharField(max_length=255)
+    event_type = models.CharField(max_length=255)
+    event_data = models.JSONField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class PredictionHistory(models.Model):
+    session_id = models.CharField(max_length=255)
+    user_input = models.JSONField()
+    predicted_careers = models.JSONField()
+    confidence_scores = models.JSONField()
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class AIModelPerformance(models.Model):
+    prediction_success = models.BooleanField()
+    confidence_score = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)

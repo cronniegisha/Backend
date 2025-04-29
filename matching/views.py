@@ -8,6 +8,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import traceback
 from rest_framework import generics
+from rest_framework.authtoken.models import Token
+from django.utils.decorators import method_decorator
+from django.views import View
+from .models import UserActivity, PredictionHistory, AIModelPerformance
 from .models import *
 from .serializers import SkillSerializer, JobSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -27,29 +31,53 @@ from .models import UserAssessment
 from ai_model.predict import identify_skill_gaps
 from ai_model.resources import get_learning_resources
 from django.http import JsonResponse
+from rest_framework.response import Response
 import json
 from django.views.decorators.csrf import csrf_exempt
 from utils import generate_dynamic_learning_links
+from .models import Profile
+from .serializers import UserSerializer, ProfileSerializer
+from django.contrib.auth import get_user_model
+from rest_framework.views import APIView
+from rest_framework import generics, status, permissions
+from django.contrib.auth import authenticate
+import jwt
+from datetime import datetime, timedelta
+from rest_framework.authtoken.models import Token
+User = get_user_model()
 
-# --- load models and encoders ONCE globally ---
-try:
+
+# Load the career dataset
+def load_career_dataset():
+    """Load the career dataset with descriptions, required skills, and industry types"""
+    try:
+        # Update this path to where your career dataset is stored
+        career_dataset_path = os.path.join("C:/Users/SHIRAH/Desktop/Test/career_matching/career_match/career_data.csv")
+        career_df = pd.read_csv(career_dataset_path, encoding='latin1')
+        return career_df
+    except Exception as e:
+        print(f"Error loading career dataset: {str(e)}")
+        # Return a minimal dataset if the file can't be loaded
+        return pd.DataFrame({
+            'career_name': [],
+            'description': [],
+            'required_skills': [],
+            'industry_type': []
+        })
+
+# Load the ML model and encoders
+def load_models():
+    """Load all the trained models and encoders"""
     model_dir = os.path.join(settings.BASE_DIR, 'matching/model')
-
+    
     model = joblib.load(os.path.join(model_dir, "rf_model.pkl"))
     skills_encoder = joblib.load(os.path.join(model_dir, "skills_encoder.pkl"))
     interests_encoder = joblib.load(os.path.join(model_dir, "interests_encoder.pkl"))
     education_encoder = joblib.load(os.path.join(model_dir, "education_encoder.pkl"))
     target_encoder = joblib.load(os.path.join(model_dir, "target_encoder.pkl"))
     feature_names = joblib.load(os.path.join(model_dir, "feature_names.pkl"))
-
-    # Fix CSV path
-    career_dataset_path = os.path.join(model_dir, "career_data.csv")
-    career_df = pd.read_csv(career_dataset_path, encoding='latin1')
-
-except Exception as e:
-    print(f"🔥 Error loading models or dataset during startup: {str(e)}")
-    model, skills_encoder, interests_encoder, education_encoder, target_encoder, feature_names, career_df = None, None, None, None, None, None, None
-
+    
+    return model, skills_encoder, interests_encoder, education_encoder,  target_encoder, feature_names
 
 # Preprocess user input for prediction
 def preprocess_input(user_input, skills_encoder, interests_encoder, education_encoder, feature_names):
@@ -159,6 +187,10 @@ def predict_career(request):
         # Parse JSON data from request
         data = json.loads(request.body)
         
+        # Load models and career dataset
+        model, skills_encoder, interests_encoder, education_encoder, target_encoder, feature_names = load_models()
+        career_df = load_career_dataset()
+        
         # Preprocess input
         X = preprocess_input(data, skills_encoder, interests_encoder, education_encoder, feature_names)
         
@@ -200,14 +232,91 @@ def predict_career(request):
                 "industryType": career_details['industry_type'],
                 "explanation": explanation
             })
+
+          # SAVE PREDICTION HISTORY
+        PredictionHistory.objects.create(
+            session_id=data.get('session_id', 'unknown'),  # Assume frontend sends a session_id
+            user_input=data,
+            predicted_careers=[rec['title'] for rec in recommendations],
+            confidence_scores=[rec['matchScore'] for rec in recommendations]
+        )
+
+        # SAVE AI PERFORMANCE
+        for score in top_probabilities:
+            AIModelPerformance.objects.create(
+                prediction_success=True,
+                confidence_score=float(score)
+            )
         
         return JsonResponse({'recommendations': recommendations})
+    
     
     except Exception as e:
         print(f"Error in prediction: {str(e)}")
         traceback.print_exc()
         return JsonResponse({'error': str(e)}, status=500)
-    
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TrackUserActivity(View):
+    def post(self, request, *args, **kwargs):
+        data = json.loads(request.body)
+
+        UserActivity.objects.create(
+            session_id=data.get('session_id', 'unknown'),
+            event_type=data.get('event_type', 'unknown'),
+            event_data=data.get('event_data', {})
+        )
+        return JsonResponse({'message': 'Activity tracked successfully'})
+
+@csrf_exempt
+def dashboard_summary(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Only GET allowed'}, status=405)
+
+    total_predictions = PredictionHistory.objects.count()
+    avg_confidence = AIModelPerformance.objects.aggregate(Avg('confidence_score'))['confidence_score__avg']
+    user_events = UserActivity.objects.values('event_type').annotate(count=Count('id'))
+
+    summary = {
+        "total_predictions": total_predictions,
+        "average_confidence": avg_confidence,
+        "user_event_counts": list(user_events)
+    }
+    return JsonResponse(summary)
+
+@csrf_exempt
+def export_prediction_report(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Only GET allowed'}, status=405)
+
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="prediction_history.csv"'
+
+    writer = csv.writer(response)
+    writer.writerow(['User Session', 'Predicted Career', 'Confidence Score', 'Timestamp'])
+
+    for record in PredictionHistory.objects.all():
+        writer.writerow([record.user_session, record.predicted_career, record.confidence_score, record.timestamp])
+
+    return response
+
+@csrf_exempt
+def user_engagement_summary(request):
+    if request.method != 'GET':
+        return JsonResponse({'error': 'Only GET allowed'}, status=405)
+
+    today = now().date()
+    week_ago = today - timedelta(days=7)
+
+    daily_users = UserActivity.objects.filter(created_at__date=today).count()
+    weekly_users = UserActivity.objects.filter(created_at__date__gte=week_ago).count()
+
+    return JsonResponse({
+        "daily_active_users": daily_users,
+        "weekly_active_users": weekly_users,
+    })
+
 
 class JobViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Job.objects.all()
@@ -434,4 +543,66 @@ def get_skills(request):
     
     return Response(skills)
 
+# Token helper
+def get_token_from_request(request):
+    token = request.COOKIES.get('auth_token')
+    if token:
+        try:
+            payload = jwt.decode(token, settings.JWT_SECRET, algorithms=['HS256'])
+            return payload
+        except jwt.ExpiredSignatureError:
+            return None
+        except jwt.InvalidTokenError:
+            return None
+    return None
+
+class SignUpView(generics.CreateAPIView):
+    serializer_class = UserSerializer
+
+
+class SignInView(APIView):
+    def post(self, request):
+        email = request.data.get('email')
+        password = request.data.get('password')
+
+        if not email or not password:
+            return Response({'error': 'Email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+        user = authenticate(request, username=user.username, password=password)
+        if user:
+            # Generate the token using Django's Token system (or JWT, depending on your setup)
+            token, created = Token.objects.get_or_create(user=user)
+            
+            # Set the token in an HTTP-only, secure cookie
+            response = JsonResponse({'message': 'Login successful'})
+            response.set_cookie(
+                'auth_token', token.key,
+                httponly=True,  # Makes the cookie inaccessible via JavaScript
+                secure=settings.DEBUG == False,  # Only set 'secure' flag in production
+                samesite='Strict',
+                max_age=7*24*60*60,  # 7 days expiration
+                path='/',
+            )
+            return response
+
+        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+class ProfileCreateView(generics.CreateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+class ProfileUpdateView(generics.RetrieveUpdateAPIView):
+    serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_object(self):
+        return Profile.objects.get(user=self.request.user)
 
