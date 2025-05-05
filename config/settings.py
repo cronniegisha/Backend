@@ -67,6 +67,17 @@ INSTALLED_APPS = [
 
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'matching.authentication.CookieTokenAuthentication',  # ← your custom cookie token class
+        # DO NOT include SessionAuthentication here
+    ],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+
 AUTH_USER_MODEL = 'matching.User'
 
 MIDDLEWARE = [
@@ -88,7 +99,7 @@ ROOT_URLCONF = 'config.urls'
 CORS_ALLOWED_ORIGINS = [
    'https://ecgs-frontend.vercel.app',
    "http://localhost:3001",
-   "https://ecgs-frontend-5nzjprcwq-cassandras-projects-e493b44c.vercel.app",
+   "https://ecgs-frontend-a2x9ehccs-cassandras-projects-e493b44c.vercel.app",
    
    
 ]
@@ -96,9 +107,11 @@ CORS_ALLOWED_ORIGINS = [
 CSRF_TRUSTED_ORIGINS = [
    'https://ecgs-frontend.vercel.app',
    "http://localhost:3001",
-   "https://ecgs-frontend-5nzjprcwq-cassandras-projects-e493b44c.vercel.app",
+   "https://ecgs-frontend-a2x9ehccs-cassandras-projects-e493b44c.vercel.app",
    
 ]
+
+SESSION_COOKIE_SAMESITE = "Lax"
 
 
 
@@ -172,8 +185,9 @@ SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 STATIC_URL = '/static/'
 
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SAMESITE = 'Lax'
 
 
 # Default primary key field type

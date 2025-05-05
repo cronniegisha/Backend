@@ -7,13 +7,19 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 import traceback
+from django.contrib.sessions.models import Session
+from django.utils import timezone
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from django.views.decorators.http import require_POST
+from django.contrib.auth import logout
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
 from django.utils.decorators import method_decorator
 from django.views import View
 from .models import UserActivity, PredictionHistory, AIModelPerformance
 from .models import *
-from .serializers import SkillSerializer, JobSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from django.contrib.auth.models import User
@@ -35,8 +41,7 @@ from rest_framework.response import Response
 import json
 from django.views.decorators.csrf import csrf_exempt
 from utils import generate_dynamic_learning_links
-from .models import Profile
-from .serializers import UserSerializer, ProfileSerializer
+from .serializers import UserSerializer, InterestSerializer, EducationSerializer, JobSerializer, ProfileSerializer, SkillSerializer, ProfileSerializer
 from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework import generics, status, permissions
@@ -44,6 +49,9 @@ from django.contrib.auth import authenticate
 import jwt
 from datetime import datetime, timedelta
 from rest_framework.authtoken.models import Token
+from django.db.models import Avg, Count, Sum, Max, Min
+from django.utils.timezone import now
+import csv
 User = get_user_model()
 
 
@@ -558,10 +566,14 @@ def get_token_from_request(request):
 
 class SignUpView(generics.CreateAPIView):
     serializer_class = UserSerializer
+    permission_classes = [AllowAny]  # Allow unauthenticated access
 
 
 class SignInView(APIView):
+    permission_classes = [AllowAny]  # Allow unauthenticated access
+
     def post(self, request):
+        print("SIGNIN DATA:", request.data)
         email = request.data.get('email')
         password = request.data.get('password')
 
@@ -575,34 +587,203 @@ class SignInView(APIView):
 
         user = authenticate(request, username=user.username, password=password)
         if user:
-            # Generate the token using Django's Token system (or JWT, depending on your setup)
-            token, created = Token.objects.get_or_create(user=user)
-            
-            # Set the token in an HTTP-only, secure cookie
-            response = JsonResponse({'message': 'Login successful'})
+            token, _ = Token.objects.get_or_create(user=user)
+
+            response = Response({'message': 'Login successful'})
             response.set_cookie(
-                'auth_token', token.key,
-                httponly=True,  # Makes the cookie inaccessible via JavaScript
-                secure=settings.DEBUG == False,  # Only set 'secure' flag in production
-                samesite='Strict',
-                max_age=7*24*60*60,  # 7 days expiration
+                key='auth_token',
+                value=token.key,
+                httponly=True,
+                secure=False,
+                samesite='Lax',
+                max_age=7 * 24 * 60 * 60,
                 path='/',
             )
+            print("Token set in cookie:", token.key)
             return response
 
         return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
-class ProfileCreateView(generics.CreateAPIView):
-    serializer_class = ProfileSerializer
+class UserInterestsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+    def get(self, request):
+        interests = Interest.objects.filter(user=request.user)
+        serializer = InterestSerializer(interests, many=True)
+        return Response(serializer.data)
 
-class ProfileUpdateView(generics.RetrieveUpdateAPIView):
-    serializer_class = ProfileSerializer
+    def post(self, request):
+        # Clear existing interests and add new ones
+        Interest.objects.filter(user=request.user).delete()
+        interests_data = request.data.get('interests', [])
+        for interest in interests_data:
+            Interest.objects.create(
+                user=request.user,
+                name=interest['name'],
+                category=interest.get('category', 'Personal')
+            )
+        return Response({"message": "Interests updated successfully."})
+    
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def education(request):
+    user = request.user
+    education_data = request.data.get('education', [])
+
+    # Delete existing entries
+    Education.objects.filter(user=user).delete()
+
+    # Create new entries
+    for entry in education_data:
+        serializer = EducationSerializer(data=entry)
+        if serializer.is_valid():
+            serializer.save(user=user)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    return Response({"success": True})
+
+class UserSkillsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
-    def get_object(self):
-        return Profile.objects.get(user=self.request.user)
+    def get(self, request):
+        skills = Skill.objects.filter(user=request.user)
+        serializer = SkillSerializer(skills, many=True)
+        return Response(serializer.data)
 
+    def post(self, request):
+        # Clear old skills and add new ones
+        Skill.objects.filter(user=request.user).delete()
+        skills_data = request.data.get('skills', [])
+
+        for skill in skills_data:
+            Skill.objects.create(
+                user=request.user,
+                name=skill.get('name', ''),
+                level=skill.get('level', 'Intermediate'),
+                description=skill.get('description', '')
+            )
+
+        return Response({"message": "Skills updated successfully."}, status=status.HTTP_200_OK)
+
+class PersonalView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def post(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+    def post(self, request):
+        profile, _ = Profile.objects.get_or_create(user=request.user)
+        serializer = ProfileSerializer(profile, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_profile(request):
+    user = request.user
+    try:
+        personal = Personal.objects.get(user=user)
+        skills = Skill.objects.filter(user=user)
+        interests = Interest.objects.filter(user=user)
+        education = Education.objects.filter(user=user)
+
+        return Response({
+            "title": personal.title,
+            "bio": personal.bio,
+            "gender": personal.gender,
+            "age": personal.age,
+            "educationLevel": personal.education_level,
+            "experience": personal.experience,
+            "careerPreferences": personal.career_preferences,
+            "location": personal.location,
+            "phone": personal.phone,
+            "website": personal.website,
+            "skills": SkillSerializer(skills, many=True).data,
+            "interests": InterestSerializer(interests, many=True).data,
+            "education": EducationSerializer(education, many=True).data
+        })
+    except Personal.DoesNotExist:
+        return Response({"error": "Profile not found."}, status=404)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def ensure_user_profile(request):
+    user = request.user
+    profile, created = Profile.objects.get_or_create(user=user)
+    return Response({"profile_id": profile.id, "created": created})
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def current_user(request):
+    serializer = UserSerializer(request.user)
+    return Response(serializer.data)
+
+@csrf_exempt  # Optional if using CSRF token handling properly
+@require_POST
+def logout_view(request):
+    logout(request)  # Clears the session
+    return JsonResponse({"message": "Logged out successfully."})
+
+@api_view(['POST'])
+def verify_token(request):
+    token = request.data.get('token')
+    
+    if not token:
+        return Response({'error': 'No token provided'}, status=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        # Try to find the session in the database
+        session = Session.objects.get(session_key=token)
+        
+        # Check if the session is expired
+        if session.expire_date < timezone.now():
+            return Response({'error': 'Session expired'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Decode the session data
+        session_data = session.get_decoded()
+        user_id = session_data.get('_auth_user_id')
+        
+        if not user_id:
+            return Response({'error': 'No user associated with this session'}, status=status.HTTP_401_UNAUTHORIZED)
+        
+        # Get the user from the database
+        from django.contrib.auth import get_user_model
+        User = get_user_model()
+        user = User.objects.get(pk=user_id)
+        
+        # Return user information
+        return Response({
+            'valid': True,
+            'user': {
+                'id': str(user.id),
+                'username': user.username,
+                'email': user.email,
+                'role': getattr(user, 'role', 'user'),  # Default to 'user' if role field doesn't exist
+            }
+        })
+    except Session.DoesNotExist:
+        return Response({'error': 'Invalid session'}, status=status.HTTP_401_UNAUTHORIZED)
+    except Exception as e:
+        return Response({'error': f'Error verifying session: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -5,7 +5,7 @@ from .serializers import *
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import SignUpView, SignInView, ProfileCreateView, ProfileUpdateView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
+from .views import SignUpView, verify_token, SignInView, logout_view, get_user_profile, ensure_user_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
 
 
 urlpatterns = [
@@ -22,11 +22,20 @@ urlpatterns = [
     path('predict/', views.predict_career, name='predict_career'),
     path('signup/', SignUpView.as_view(), name='signup'),
     path('signin/', SignInView.as_view(), name='signin'),
-    path('profile/create/', ProfileCreateView.as_view(), name='profile-create'),
-    path('profile/update/', ProfileUpdateView.as_view(), name='profile-update'),
     path('track_activity/', TrackUserActivity.as_view(), name='track_activity'),
     path('dashboard_summary/', dashboard_summary, name='dashboard_summary'),
     path('export_prediction_report/', export_prediction_report, name='export_prediction_report'),
     path('user_engagement_summary/', user_engagement_summary, name='user_engagement_summary'),
+    path('interests/', UserInterestsView.as_view(), name='user-interests'),
+    path('education/', education, name='education'),
+    path('skills/', UserSkillsView.as_view(), name='user-skills'),
+    path("personal-info/", UserProfileView.as_view(), name="personal-info"),
+    path("header/", UserProfileView.as_view(), name="profile-header"),
+    path('profile/', get_user_profile, name='get_user_profile'),
+    path('ensure-profile/', ensure_user_profile, name='ensure_user_profile'),
+    path('me/', current_user, name='current_user'),
+    path("logout/", logout_view, name="logout"),
+    path('verify-token', views.verify_token, name='verify-token'),
+    
    
 ]

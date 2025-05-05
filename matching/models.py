@@ -186,3 +186,5 @@ class AIModelPerformance(models.Model):
     prediction_success = models.BooleanField()
     confidence_score = models.FloatField()
     created_at = models.DateTimeField(auto_now_add=True)
+
+
