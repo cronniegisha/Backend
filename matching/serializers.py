@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Profile, Education, Interest, Job, Skill
+from .models import Profile, Education, Interest, Job, Skill, ProfileSkill
 
 User = get_user_model()
 
@@ -25,8 +25,13 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password']
 
     def create(self, validated_data):
-        user = User.objects.create_user(**validated_data)
+        print("Creating user...")
+        password = validated_data.pop('password')  # Take out password
+        user = User(**validated_data)
+        user.set_password(password)  # 🔐 Hash the password
+        user.save()
         return user
+
 
 class InterestSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,7 +46,7 @@ class EducationSerializer(serializers.ModelSerializer):
 
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Skill
+        model = ProfileSkill
         fields = ['id', 'name', 'level', 'description']
 
 class PersonalSerializer(serializers.ModelSerializer):

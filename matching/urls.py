@@ -5,7 +5,7 @@ from .serializers import *
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import SignUpView, verify_token, SignInView, logout_view, get_user_profile, ensure_user_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
+from .views import SignUpView, verify_token, SignInView, get_csrf_token, logout_view, get_user_profile, ensure_user_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
 
 
 urlpatterns = [
@@ -36,6 +36,7 @@ urlpatterns = [
     path('me/', current_user, name='current_user'),
     path("logout/", logout_view, name="logout"),
     path('verify-token', views.verify_token, name='verify-token'),
+    path("csrf/", get_csrf_token),
     
    
 ]

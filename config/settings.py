@@ -77,6 +77,11 @@ REST_FRAMEWORK = {
     ]
 }
 
+AUTHENTICATION_BACKENDS = [
+    'matching.authentication_backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',  # fallback
+]
+
 
 AUTH_USER_MODEL = 'matching.User'
 

@@ -13,6 +13,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.views.decorators.http import require_POST
+from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth import logout
 from rest_framework import generics
 from rest_framework.authtoken.models import Token
@@ -566,11 +567,18 @@ def get_token_from_request(request):
 
 class SignUpView(generics.CreateAPIView):
     serializer_class = UserSerializer
-    permission_classes = [AllowAny]  # Allow unauthenticated access
+    permission_classes = [AllowAny]  
+    queryset = User.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        print("SIGNUP DATA RECEIVED:", request.data)  # 🔍 Print data
+        return super().create(request, *args, **kwargs)
 
 
+from django.contrib.auth.hashers import check_password
+@method_decorator(csrf_exempt, name='dispatch')
 class SignInView(APIView):
-    permission_classes = [AllowAny]  # Allow unauthenticated access
+    permission_classes = [AllowAny]
 
     def post(self, request):
         print("SIGNIN DATA:", request.data)
@@ -580,29 +588,27 @@ class SignInView(APIView):
         if not email or not password:
             return Response({'error': 'Email and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
+        # Use `username=email` so it works with your custom EmailBackend
+        user = authenticate(request, username=email, password=password)
+
+        if user is None:
             return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
-        user = authenticate(request, username=user.username, password=password)
-        if user:
-            token, _ = Token.objects.get_or_create(user=user)
+        token, _ = Token.objects.get_or_create(user=user)
 
-            response = Response({'message': 'Login successful'})
-            response.set_cookie(
-                key='auth_token',
-                value=token.key,
-                httponly=True,
-                secure=False,
-                samesite='Lax',
-                max_age=7 * 24 * 60 * 60,
-                path='/',
-            )
-            print("Token set in cookie:", token.key)
-            return response
+        response = Response({'message': 'Login successful'})
+        response.set_cookie(
+            key='auth_token',
+            value=token.key,
+            httponly=True,
+            secure=False,  # Set to True in production with HTTPS
+            samesite='Lax',
+            max_age=7 * 24 * 60 * 60,
+            path='/',
+        )
+        print("Token set in cookie:", token.key)
+        return response
 
-        return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
 
 class UserInterestsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -698,34 +704,34 @@ class UserProfileView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_user_profile(request):
     user = request.user
     try:
         personal = Personal.objects.get(user=user)
-        skills = Skill.objects.filter(user=user)
-        interests = Interest.objects.filter(user=user)
-        education = Education.objects.filter(user=user)
-
-        return Response({
-            "title": personal.title,
-            "bio": personal.bio,
-            "gender": personal.gender,
-            "age": personal.age,
-            "educationLevel": personal.education_level,
-            "experience": personal.experience,
-            "careerPreferences": personal.career_preferences,
-            "location": personal.location,
-            "phone": personal.phone,
-            "website": personal.website,
-            "skills": SkillSerializer(skills, many=True).data,
-            "interests": InterestSerializer(interests, many=True).data,
-            "education": EducationSerializer(education, many=True).data
-        })
     except Personal.DoesNotExist:
         return Response({"error": "Profile not found."}, status=404)
+
+    skills = Skill.objects.filter(user=user)
+    interests = Interest.objects.filter(user=user)
+    education = Education.objects.filter(user=user)
+
+    return Response({
+        "title": personal.title,
+        "bio": personal.bio,
+        "gender": personal.gender,
+        "age": personal.age,
+        "educationLevel": personal.education_level,
+        "experience": personal.experience,
+        "careerPreferences": personal.career_preferences,
+        "location": personal.location,
+        "phone": personal.phone,
+        "website": personal.website,
+        "skills": SkillSerializer(skills, many=True).data,
+        "interests": InterestSerializer(interests, many=True).data,
+        "education": EducationSerializer(education, many=True).data
+    })
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -740,50 +746,51 @@ def current_user(request):
     serializer = UserSerializer(request.user)
     return Response(serializer.data)
 
-@csrf_exempt  # Optional if using CSRF token handling properly
+@csrf_exempt
 @require_POST
 def logout_view(request):
-    logout(request)  # Clears the session
-    return JsonResponse({"message": "Logged out successfully."})
+    try:
+        user = request.user
+        print("Logging out user:", user)
+
+        # Clear token
+        if user.is_authenticated:
+            Token.objects.filter(user=user).delete()
+
+        logout(request)  # Clear session too
+
+        response = JsonResponse({"message": "Logged out successfully."})
+        response.delete_cookie("auth_token")
+        return response
+    except Exception as e:
+        print("Logout error:", str(e))
+        return JsonResponse({"error": "Logout failed."}, status=500)
+
+from rest_framework.authtoken.models import Token
 
 @api_view(['POST'])
 def verify_token(request):
-    token = request.data.get('token')
-    
-    if not token:
-        return Response({'error': 'No token provided'}, status=status.HTTP_400_BAD_REQUEST)
-    
+    token_key = request.data.get('token')
+
+    if not token_key:
+        return Response({'error': 'No token provided'}, status=400)
+
     try:
-        # Try to find the session in the database
-        session = Session.objects.get(session_key=token)
-        
-        # Check if the session is expired
-        if session.expire_date < timezone.now():
-            return Response({'error': 'Session expired'}, status=status.HTTP_401_UNAUTHORIZED)
-        
-        # Decode the session data
-        session_data = session.get_decoded()
-        user_id = session_data.get('_auth_user_id')
-        
-        if not user_id:
-            return Response({'error': 'No user associated with this session'}, status=status.HTTP_401_UNAUTHORIZED)
-        
-        # Get the user from the database
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-        user = User.objects.get(pk=user_id)
-        
-        # Return user information
+        token = Token.objects.get(key=token_key)
+        user = token.user
+
         return Response({
             'valid': True,
             'user': {
                 'id': str(user.id),
                 'username': user.username,
                 'email': user.email,
-                'role': getattr(user, 'role', 'user'),  # Default to 'user' if role field doesn't exist
+                'role': getattr(user, 'role', 'user'),
             }
         })
-    except Session.DoesNotExist:
-        return Response({'error': 'Invalid session'}, status=status.HTTP_401_UNAUTHORIZED)
-    except Exception as e:
-        return Response({'error': f'Error verifying session: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    except Token.DoesNotExist:
+        return Response({'error': 'Invalid token'}, status=401)
+    
+@ensure_csrf_cookie
+def get_csrf_token(request):
+    return JsonResponse({"detail": "CSRF cookie set"})
