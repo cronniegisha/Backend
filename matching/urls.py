@@ -5,8 +5,10 @@ from .serializers import *
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import SignUpView, verify_token, SignInView, get_csrf_token, logout_view, get_user_profile, ensure_user_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
-
+from .views import SignUpView, verify_token, SignInView, get_csrf_token, logout_view, ensure_user_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
+from .views import (
+    EnsureProfileView, ProfileView, ProfileHeaderView, PersonalInfoView,
+    SkillsView, InterestsView, EducationView)
 
 urlpatterns = [
     path('trigger-scraping/', views.trigger_scraping, name='trigger-scraping'),
@@ -31,12 +33,18 @@ urlpatterns = [
     path('skills/', UserSkillsView.as_view(), name='user-skills'),
     path("personal-info/", UserProfileView.as_view(), name="personal-info"),
     path("header/", UserProfileView.as_view(), name="profile-header"),
-    path('profile/', get_user_profile, name='get_user_profile'),
     path('ensure-profile/', ensure_user_profile, name='ensure_user_profile'),
     path('me/', current_user, name='current_user'),
     path("logout/", logout_view, name="logout"),
     path('verify-token', views.verify_token, name='verify-token'),
     path("csrf/", get_csrf_token),
+    path('api/ensure-profile/', EnsureProfileView.as_view(), name='ensure-profile'),
+    path('api/profile/', ProfileView.as_view(), name='profile'),
+    path('api/profile/header/', ProfileHeaderView.as_view(), name='profile-header'),
+    path('api/profile/personal-info/', PersonalInfoView.as_view(), name='personal-info'),
+    path('api/profile/skills/', SkillsView.as_view(), name='skills'),
+    path('api/profile/interests/', InterestsView.as_view(), name='interests'),
+    path('profile/education/', EducationView.as_view(), name='education'),
     
    
 ]

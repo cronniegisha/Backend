@@ -629,25 +629,46 @@ class UserInterestsView(APIView):
                 category=interest.get('category', 'Personal')
             )
         return Response({"message": "Interests updated successfully."})
-    
-@api_view(['PUT'])
+
+@api_view(["GET", "POST", "PUT"])
 @permission_classes([IsAuthenticated])
 def education(request):
-    user = request.user
-    education_data = request.data.get('education', [])
+    if request.method == "GET":
+        # Return all education entries for current user
+        educations = Education.objects.filter(user=request.user)
+        serializer = EducationSerializer(educations, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
-    # Delete existing entries
-    Education.objects.filter(user=user).delete()
+    elif request.method in ["POST", "PUT"]:
+        # Clear existing entries (if PUT or POST is treated as update)
+        Education.objects.filter(user=request.user).delete()
 
-    # Create new entries
-    for entry in education_data:
-        serializer = EducationSerializer(data=entry)
-        if serializer.is_valid():
-            serializer.save(user=user)
-        else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        education_data = request.data.get("education", [])
 
-    return Response({"success": True})
+        if not isinstance(education_data, list):
+            return Response({"error": "Expected a list of education entries under 'education' key."}, status=400)
+
+        for edu in education_data:
+            if not isinstance(edu, dict):
+                continue  # skip invalid entry
+
+            year_range = edu.get("year", " - ")
+            start_year, end_year = ("", "")
+            if " - " in year_range:
+                start_year, end_year = year_range.split(" - ")
+
+            Education.objects.create(
+                user=request.user,
+                institution=edu.get("institution"),
+                degree=edu.get("degree"),
+                field=edu.get("field"),
+                start_year=start_year.strip(),
+                end_year=end_year.strip(),
+                description=edu.get("description")
+            )
+
+        return Response({"message": "Education updated successfully."}, status=status.HTTP_200_OK)
+    
 
 class UserSkillsView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -703,35 +724,6 @@ class UserProfileView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
-def get_user_profile(request):
-    user = request.user
-    try:
-        personal = Personal.objects.get(user=user)
-    except Personal.DoesNotExist:
-        return Response({"error": "Profile not found."}, status=404)
-
-    skills = Skill.objects.filter(user=user)
-    interests = Interest.objects.filter(user=user)
-    education = Education.objects.filter(user=user)
-
-    return Response({
-        "title": personal.title,
-        "bio": personal.bio,
-        "gender": personal.gender,
-        "age": personal.age,
-        "educationLevel": personal.education_level,
-        "experience": personal.experience,
-        "careerPreferences": personal.career_preferences,
-        "location": personal.location,
-        "phone": personal.phone,
-        "website": personal.website,
-        "skills": SkillSerializer(skills, many=True).data,
-        "interests": InterestSerializer(interests, many=True).data,
-        "education": EducationSerializer(education, many=True).data
-    })
 
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
@@ -794,3 +786,160 @@ def verify_token(request):
 @ensure_csrf_cookie
 def get_csrf_token(request):
     return JsonResponse({"detail": "CSRF cookie set"})
+
+
+
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from django.shortcuts import get_object_or_404
+from .models import Profile, Skill, Interest, Education
+from .serializers import (
+    ProfileSerializer, ProfileHeaderSerializer, PersonalInfoSerializer,
+    SkillUpdateSerializer, InterestUpdateSerializer, EducationUpdateSerializer,
+    SkillSerializer, InterestSerializer, EducationSerializer
+)
+
+class EnsureProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def post(self, request):
+        # Get or create profile for the authenticated user
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        return Response({
+            'profile_id': profile.id,
+            'created': created
+        })
+
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = ProfileSerializer(profile)
+        return Response(serializer.data)
+
+class ProfileHeaderView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def patch(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = ProfileHeaderSerializer(profile, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class PersonalInfoView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def patch(self, request):
+        profile, created = Profile.objects.get_or_create(user=request.user)
+        serializer = PersonalInfoSerializer(profile, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class SkillsView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        profile = get_object_or_404(Profile, user=request.user)
+        skills = profile.skills.all()
+        serializer = SkillSerializer(skills, many=True)
+        return Response(serializer.data)
+    
+    def put(self, request):
+        profile = get_object_or_404(Profile, user=request.user)
+        serializer = SkillUpdateSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            # Clear existing skills
+            profile.skills.all().delete()
+            
+            # Add new skills
+            for skill_data in serializer.validated_data['skills']:
+                Skill.objects.create(
+                    profile=profile,
+                    name=skill_data['name'],
+                    level=skill_data['level']
+                )
+            
+            # Return updated skills
+            updated_skills = profile.skills.all()
+            skill_serializer = SkillSerializer(updated_skills, many=True)
+            return Response(skill_serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class InterestsView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        profile = get_object_or_404(Profile, user=request.user)
+        interests = profile.interests.all()
+        serializer = InterestSerializer(interests, many=True)
+        return Response(serializer.data)
+    
+    def put(self, request):
+        profile = get_object_or_404(Profile, user=request.user)
+        serializer = InterestUpdateSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            # Clear existing interests
+            profile.interests.all().delete()
+            
+            # Add new interests
+            for interest_data in serializer.validated_data['interests']:
+                Interest.objects.create(
+                    profile=profile,
+                    name=interest_data['name'],
+                    category=interest_data.get('category', 'Personal')
+                )
+            
+            # Return updated interests
+            updated_interests = profile.interests.all()
+            interest_serializer = InterestSerializer(updated_interests, many=True)
+            return Response(interest_serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class EducationView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request):
+        profile = get_object_or_404(Profile, user=request.user)
+        education = profile.education.all()
+        serializer = EducationSerializer(education, many=True)
+        return Response(serializer.data)
+    
+    def put(self, request):
+        profile = get_object_or_404(Profile, user=request.user)
+        serializer = EducationUpdateSerializer(data=request.data)
+        
+        if serializer.is_valid():
+            # Clear existing education entries
+            profile.education.all().delete()
+            
+            # Add new education entries
+            for edu_data in serializer.validated_data['education']:
+                Education.objects.create(
+                    profile=profile,
+                    institution=edu_data['institution'],
+                    degree=edu_data['degree'],
+                    field=edu_data.get('field', ''),
+                    start_year=edu_data.get('start_year', ''),
+                    end_year=edu_data.get('end_year', ''),
+                    description=edu_data.get('description', '')
+                )
+            
+            # Return updated education
+            updated_education = profile.education.all()
+            education_serializer = EducationSerializer(updated_education, many=True)
+            return Response(education_serializer.data)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
