@@ -831,17 +831,23 @@ class ProfileHeaderView(APIView):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
 class PersonalInfoView(APIView):
     permission_classes = [IsAuthenticated]
     
     def patch(self, request):
+        # Log the incoming data
+        print("Received data:", request.data)
+        
         profile, created = Profile.objects.get_or_create(user=request.user)
         serializer = PersonalInfoSerializer(profile, data=request.data, partial=True)
         
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+        
+        # Log validation errors
+        print("Validation errors:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class SkillsView(APIView):

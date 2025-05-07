@@ -89,8 +89,8 @@ class ProfileHeaderSerializer(serializers.Serializer):
         return instance
 
 class PersonalInfoSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100)
-    email = serializers.EmailField()
+    name = serializers.SerializerMethodField()
+    email = serializers.SerializerMethodField()  # Change this line too
     title = serializers.CharField(max_length=100)
     bio = serializers.CharField(allow_blank=True)
     gender = serializers.CharField(max_length=20, allow_blank=True)
@@ -102,8 +102,14 @@ class PersonalInfoSerializer(serializers.Serializer):
     phone = serializers.CharField(max_length=20, allow_blank=True)
     website = serializers.URLField(allow_blank=True)
     
+    def get_name(self, obj):
+        return f"{obj.user.first_name} {obj.user.last_name}".strip() or obj.user.username
+    
+    def get_email(self, obj):
+        return obj.user.email
+    
     def update(self, instance, validated_data):
-        # Update user's name and email
+        # The rest of your update method remains unchanged
         name_parts = validated_data.pop('name', '').split(' ', 1)
         instance.user.first_name = name_parts[0] if name_parts else ''
         instance.user.last_name = name_parts[1] if len(name_parts) > 1 else ''
