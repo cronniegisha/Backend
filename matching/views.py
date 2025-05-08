@@ -869,7 +869,7 @@ class SkillsView(APIView):
             
             # Add new skills
             for skill_data in serializer.validated_data['skills']:
-                Skill.objects.create(
+                ProfileSkill.objects.create(
                     profile=profile,
                     name=skill_data['name'],
                     level=skill_data['level']

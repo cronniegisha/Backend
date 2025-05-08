@@ -34,8 +34,8 @@ class UserSerializer(serializers.ModelSerializer):
 
 class SkillSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Skill
-        fields = ['id', 'name', 'level']
+        model = ProfileSkill
+        fields = [ 'id', 'name', 'level']
 
 class InterestSerializer(serializers.ModelSerializer):
     class Meta:
