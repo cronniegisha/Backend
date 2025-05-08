@@ -1,8 +1,8 @@
 from django.core.management.base import BaseCommand
-from career.scraper import scrape_brighter_monday
+from matching.scraper import scrape_brighter_monday
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.management.base import BaseCommand
-from career.scraper import scrape_brighter_monday  
+from matching.scraper import scrape_brighter_monday  
 
 class Command(BaseCommand):
     help = "Scrapes BrighterMonday job listings"

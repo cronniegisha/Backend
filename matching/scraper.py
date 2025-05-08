@@ -6,7 +6,7 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 from .models import Job
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "career_guidance.settings")
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings")
 django.setup()
 
 def scrape_brighter_monday():
