@@ -21,6 +21,7 @@ django-cors-headers==4.7.0
 django-filter==25.1
 djangorestframework==3.15.2
 djangorestframework_simplejwt==5.5.0
+drf-yasg==1.21.10
 filelock==3.18.0
 fonttools==4.57.0
 gdown==5.2.0
@@ -28,6 +29,7 @@ gunicorn==23.0.0
 h11==0.14.0
 idna==3.10
 imbalanced-learn==0.13.0
+inflection==0.5.1
 joblib==1.4.2
 kiwisolver==1.4.8
 kombu==5.5.2
@@ -49,6 +51,7 @@ PySocks==1.7.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 pytz==2025.1
+PyYAML==6.0.2
 requests==2.32.3
 scikit-learn==1.6.1
 scipy==1.15.2
@@ -68,6 +71,7 @@ trio==0.29.0
 trio-websocket==0.12.2
 typing_extensions==4.13.1
 tzdata==2025.2
+uritemplate==4.1.1
 urllib3==2.4.0
 vine==5.1.0
 wcwidth==0.2.13

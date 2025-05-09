@@ -25,15 +25,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-u5gxde_)u!0@lu2qu4cmdn!hzja7d97bmd_sf4o%o7j-kyn^o^'
+SECRET_KEY = os.environ.get("SECRET_KEY", "default_secret_key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'web-production-ccf4.up.railway.app'
+    'web-production-ccf4.up.railway.app',
 ]
 
 # Static files (CSS, JavaScript, Images)
@@ -200,5 +200,4 @@ CSRF_COOKIE_SAMESITE = 'Lax'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 
