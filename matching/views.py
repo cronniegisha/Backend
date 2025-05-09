@@ -861,11 +861,18 @@ class PersonalInfoView(APIView):
     
     def patch(self, request):
         profile = get_object_or_404(Profile, user=request.user)
+        
+        # Log the received data for debugging
+        print(f"Received personal info data: {request.data}")
+        
         serializer = PersonalInfoSerializer(profile, data=request.data, partial=True)
         
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
+        
+        # Log validation errors
+        print(f"Validation errors: {serializer.errors}")
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class ProfileHeaderView(APIView):
@@ -887,12 +894,13 @@ class ProfileHeaderView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# Update the SkillsView class to match the ProfileSkill model
 class SkillsView(APIView):
     permission_classes = [permissions.IsAuthenticated, IsOwnerOrReadOnly]
     
     def get(self, request):
         profile = get_object_or_404(Profile, user=request.user)
-        skills = Skill.objects.filter(profile=profile)
+        skills = ProfileSkill.objects.filter(profile=profile)
         serializer = SkillSerializer(skills, many=True)
         return Response(serializer.data)
     
@@ -900,18 +908,27 @@ class SkillsView(APIView):
         profile = get_object_or_404(Profile, user=request.user)
         
         # Clear existing skills
-        Skill.objects.filter(profile=profile).delete()
+        ProfileSkill.objects.filter(profile=profile).delete()
         
         # Add new skills
         skills_data = request.data.get('skills', [])
+        
+        # Log the received data for debugging
+        print(f"Received skills data: {skills_data}")
+        
+        # Handle both array of strings and array of objects
         for skill_data in skills_data:
             if isinstance(skill_data, dict):
-                Skill.objects.create(profile=profile, **skill_data)
-            else:
-                Skill.objects.create(profile=profile, name=skill_data)
+                ProfileSkill.objects.create(
+                    profile=profile, 
+                    name=skill_data.get('name', ''),
+                    level=skill_data.get('level', 'Intermediate')
+                )
+            elif isinstance(skill_data, str):
+                ProfileSkill.objects.create(profile=profile, name=skill_data, level='Intermediate')
         
         # Return updated skills
-        skills = Skill.objects.filter(profile=profile)
+        skills = ProfileSkill.objects.filter(profile=profile)
         serializer = SkillSerializer(skills, many=True)
         return Response(serializer.data)
 
@@ -932,11 +949,17 @@ class InterestsView(APIView):
         
         # Add new interests
         interests_data = request.data.get('interests', [])
+        
+        # Handle both array of strings and array of objects
         for interest_data in interests_data:
             if isinstance(interest_data, dict):
-                Interest.objects.create(profile=profile, **interest_data)
-            else:
-                Interest.objects.create(profile=profile, name=interest_data)
+                Interest.objects.create(
+                    profile=profile, 
+                    name=interest_data.get('name', ''),
+                    category=interest_data.get('category', 'Personal')
+                )
+            elif isinstance(interest_data, str):
+                Interest.objects.create(profile=profile, name=interest_data, category='Personal')
         
         # Return updated interests
         interests = Interest.objects.filter(profile=profile)

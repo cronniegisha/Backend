@@ -32,6 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+# Update the SkillSerializer to match the ProfileSkill model
 class SkillSerializer(serializers.ModelSerializer):
     id = serializers.CharField(required=False)  # Allow client-side IDs
     
