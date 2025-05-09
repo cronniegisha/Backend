@@ -7,8 +7,10 @@ from rest_framework.routers import DefaultRouter
 from . import views
 from .views import SignUpView, verify_token, SignInView, get_csrf_token, logout_view, ensure_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
 from .views import ProfileView, ProfileHeaderView, PersonalInfoView, SkillsView, InterestsView, EducationView
+from .views import HomeView
 
 urlpatterns = [
+    path("", HomeView.as_view(), name="api-home"),
     path('trigger-scraping/', views.trigger_scraping, name='trigger-scraping'),
     path('jobs/', get_brighter_monday_jobs, name='brightermonday-jobs'),
     path('register/', register_user, name='register'),
