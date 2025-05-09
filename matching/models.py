@@ -125,53 +125,55 @@ class AIModelPerformance(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
-    title = models.CharField(max_length=100, blank=True)
+    name = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=255, blank=True)
     bio = models.TextField(blank=True)
     gender = models.CharField(max_length=20, blank=True)
-    age = models.PositiveIntegerField(null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
     education_level = models.CharField(max_length=50, blank=True)
-    experience = models.CharField(max_length=50, blank=True)
-    career_preferences = models.CharField(max_length=100, blank=True)
-    location = models.CharField(max_length=100, blank=True)
+    experience = models.CharField(max_length=20, blank=True)
+    career_preferences = models.CharField(max_length=255, blank=True)
+    location = models.CharField(max_length=255, blank=True)
     phone = models.CharField(max_length=20, blank=True)
     website = models.URLField(blank=True)
+    image = models.URLField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.user.username}'s Profile"
 
 class ProfileSkill(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='skills', null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='skills')
     name = models.CharField(max_length=100)
-    level = models.CharField(max_length=50)
+    level = models.CharField(max_length=20, blank=True)  # Beginner, Intermediate, Advanced, Expert
     
     class Meta:
         unique_together = ('profile', 'name')
     
     def __str__(self):
-        return f"{self.name} ({self.level})"
+        return f"{self.name} ({self.profile.user.username})"
 
 class Interest(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='interests', null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='interests')
     name = models.CharField(max_length=100)
-    category = models.CharField(max_length=50, default='Personal')
+    category = models.CharField(max_length=50, blank=True)  # Professional, Technical, Personal, etc.
     
     class Meta:
         unique_together = ('profile', 'name')
     
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.profile.user.username})"
 
 class Education(models.Model):
-    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='education', null=True)
-    institution = models.CharField(max_length=200)
-    degree = models.CharField(max_length=100, null=True)
-    field = models.CharField(max_length=100, blank=True, null=True)
-    start_year = models.CharField(max_length=4, blank=True, null=True)
-    end_year = models.CharField(max_length=4, blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name='education')
+    institution = models.CharField(max_length=255)
+    degree = models.CharField(max_length=255)
+    field = models.CharField(max_length=255, blank=True)
+    year = models.CharField(max_length=50, blank=True)  # To store ranges like "2018 - 2022"
+    description = models.TextField(blank=True)
     
     def __str__(self):
-        return f"{self.degree} at {self.institution}"
+        return f"{self.degree} at {self.institution} ({self.profile.user.username})"

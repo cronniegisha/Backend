@@ -5,10 +5,8 @@ from .serializers import *
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import SignUpView, verify_token, SignInView, get_csrf_token, logout_view, ensure_user_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
-from .views import (
-    EnsureProfileView, ProfileView, ProfileHeaderView, PersonalInfoView,
-    SkillsView, InterestsView, EducationView)
+from .views import SignUpView, verify_token, SignInView, get_csrf_token, logout_view, ensure_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
+from .views import ProfileView, ProfileHeaderView, PersonalInfoView, SkillsView, InterestsView, EducationView
 
 urlpatterns = [
     path('trigger-scraping/', views.trigger_scraping, name='trigger-scraping'),
@@ -32,13 +30,13 @@ urlpatterns = [
     path("logout/", logout_view, name="logout"),
     path('verify-token', views.verify_token, name='verify-token'),
     path("csrf/", get_csrf_token),
-    path('ensure-profile/', EnsureProfileView.as_view(), name='ensure-profile'),
-    path('profile/', ProfileView.as_view(), name='profile'),
-    path('header/', ProfileHeaderView.as_view(), name='profile-header'),
-    path('personal-info/', PersonalInfoView.as_view(), name='personal-info'),
-    path('skills/', SkillsView.as_view(), name='skills'),
-    path('interests/', InterestsView.as_view(), name='interests'),
-    path('education/', EducationView.as_view(), name='education'),
+    path('ensure-profile/', views.ensure_profile, name='ensure-profile'),
+    path('profile/', views.ProfileView.as_view(), name='profile'),
+    path('header/', views.ProfileHeaderView.as_view(), name='profile-header'),
+    path('personal-info/', views.PersonalInfoView.as_view(), name='personal-info'),
+    path('skills/', views.SkillsView.as_view(), name='skills'),
+    path('interests/', views.InterestsView.as_view(), name='interests'),
+    path('education/', views.EducationView.as_view(), name='education'),
     
    
 ]

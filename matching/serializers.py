@@ -33,136 +33,98 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
 class SkillSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(required=False)  # Allow client-side IDs
+    
     class Meta:
         model = ProfileSkill
-        fields = [ 'id', 'name', 'level']
+        fields = ['id', 'name', 'level']
+        
+    def to_internal_value(self, data):
+        # Handle client-side IDs by removing them before validation
+        if isinstance(data, dict) and 'id' in data and not data['id'].isdigit():
+            data = data.copy()
+            data.pop('id', None)
+        return super().to_internal_value(data)
 
 class InterestSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(required=False)  # Allow client-side IDs
+    
     class Meta:
         model = Interest
         fields = ['id', 'name', 'category']
+        
+    def to_internal_value(self, data):
+        # Handle client-side IDs by removing them before validation
+        if isinstance(data, dict) and 'id' in data and not data['id'].isdigit():
+            data = data.copy()
+            data.pop('id', None)
+        return super().to_internal_value(data)
 
 class EducationSerializer(serializers.ModelSerializer):
+    id = serializers.CharField(required=False)  # Allow client-side IDs
+    
     class Meta:
         model = Education
-        fields = ['id', 'institution', 'degree', 'field', 'start_year', 'end_year', 'description']
+        fields = ['id', 'institution', 'degree', 'field', 'year', 'description']
+        
+    def to_internal_value(self, data):
+        # Handle client-side IDs by removing them before validation
+        if isinstance(data, dict) and 'id' in data and not data['id'].isdigit():
+            data = data.copy()
+            data.pop('id', None)
+        return super().to_internal_value(data)
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
-    skills = SkillSerializer(many=True, read_only=True)
-    interests = InterestSerializer(many=True, read_only=True)
-    education = EducationSerializer(many=True, read_only=True)
-    name = serializers.SerializerMethodField()
-    email = serializers.SerializerMethodField()
-
+    skills = SkillSerializer(many=True, required=False)
+    interests = InterestSerializer(many=True, required=False)
+    education = EducationSerializer(many=True, required=False)
+    username = serializers.CharField(source='user.username', read_only=True)
+    email = serializers.EmailField(source='user.email', read_only=True)
+    
     class Meta:
         model = Profile
         fields = [
-            'id', 'user', 'name', 'email', 'title', 'bio', 'gender', 'age',
-            'education_level', 'experience', 'career_preferences',
-            'location', 'phone', 'website', 'skills', 'interests', 'education'
+            'id', 'username', 'email', 'name', 'title', 'bio', 'gender', 
+            'age', 'education_level', 'experience', 'career_preferences', 
+            'location', 'phone', 'website', 'image', 'skills', 'interests', 
+            'education', 'created_at', 'updated_at'
         ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
     
-    def get_name(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}".strip() or obj.user.username
-    
-    def get_email(self, obj):
-        return obj.user.email
-
-class ProfileHeaderSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=100)
-    title = serializers.CharField(max_length=100)
-    bio = serializers.CharField(allow_blank=True)
+    def create(self, validated_data):
+        skills_data = validated_data.pop('skills', [])
+        interests_data = validated_data.pop('interests', [])
+        education_data = validated_data.pop('education', [])
+        
+        profile = Profile.objects.create(**validated_data)
+        
+        for skill_data in skills_data:
+            Skill.objects.create(profile=profile, **skill_data)
+        
+        for interest_data in interests_data:
+            Interest.objects.create(profile=profile, **interest_data)
+        
+        for edu_data in education_data:
+            Education.objects.create(profile=profile, **edu_data)
+        
+        return profile
     
     def update(self, instance, validated_data):
-        # Update user's name (split into first_name and last_name)
-        name_parts = validated_data.pop('name', '').split(' ', 1)
-        instance.user.first_name = name_parts[0] if name_parts else ''
-        instance.user.last_name = name_parts[1] if len(name_parts) > 1 else ''
-        instance.user.save()
-        
         # Update profile fields
-        instance.title = validated_data.get('title', instance.title)
-        instance.bio = validated_data.get('bio', instance.bio)
+        for attr, value in validated_data.items():
+            if attr not in ['skills', 'interests', 'education']:
+                setattr(instance, attr, value)
         instance.save()
         
         return instance
 
-class PersonalInfoSerializer(serializers.Serializer):
-    name = serializers.SerializerMethodField()
-    email = serializers.SerializerMethodField()  # Change this line too
-    title = serializers.CharField(max_length=100)
-    bio = serializers.CharField(allow_blank=True)
-    gender = serializers.CharField(max_length=20, allow_blank=True)
-    age = serializers.IntegerField(allow_null=True, required=False)
-    educationLevel = serializers.CharField(source='education_level', max_length=50, allow_blank=True)
-    experience = serializers.CharField(max_length=50, allow_blank=True)
-    careerPreferences = serializers.CharField(source='career_preferences', max_length=100, allow_blank=True)
-    location = serializers.CharField(max_length=100, allow_blank=True)
-    phone = serializers.CharField(max_length=20, allow_blank=True)
-    website = serializers.URLField(allow_blank=True)
+class PersonalInfoSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(source='user.email', read_only=True)
     
-    def get_name(self, obj):
-        return f"{obj.user.first_name} {obj.user.last_name}".strip() or obj.user.username
-    
-    def get_email(self, obj):
-        return obj.user.email
-    
-    def update(self, instance, validated_data):
-        # The rest of your update method remains unchanged
-        name_parts = validated_data.pop('name', '').split(' ', 1)
-        instance.user.first_name = name_parts[0] if name_parts else ''
-        instance.user.last_name = name_parts[1] if len(name_parts) > 1 else ''
-        instance.user.email = validated_data.pop('email', instance.user.email)
-        instance.user.save()
-        
-        # Update profile fields
-        instance.title = validated_data.get('title', instance.title)
-        instance.bio = validated_data.get('bio', instance.bio)
-        instance.gender = validated_data.get('gender', instance.gender)
-        instance.age = validated_data.get('age', instance.age)
-        instance.education_level = validated_data.get('education_level', instance.education_level)
-        instance.experience = validated_data.get('experience', instance.experience)
-        instance.career_preferences = validated_data.get('career_preferences', instance.career_preferences)
-        instance.location = validated_data.get('location', instance.location)
-        instance.phone = validated_data.get('phone', instance.phone)
-        instance.website = validated_data.get('website', instance.website)
-        instance.save()
-        
-        return instance
-
-# Fixed serializers for updating collections
-class SkillUpdateSerializer(serializers.Serializer):
-    skills = serializers.ListField(
-        child=serializers.DictField()
-    )
-    
-    def validate_skills(self, value):
-        for skill in value:
-            if 'name' not in skill or 'level' not in skill:
-                raise serializers.ValidationError("Each skill must have 'name' and 'level' fields")
-        return value
-
-class InterestUpdateSerializer(serializers.Serializer):
-    interests = serializers.ListField(
-        child=serializers.DictField()
-    )
-    
-    def validate_interests(self, value):
-        for interest in value:
-            if 'name' not in interest:
-                raise serializers.ValidationError("Each interest must have a 'name' field")
-            if 'category' not in interest:
-                interest['category'] = 'Personal'  # Default category
-        return value
-
-class EducationUpdateSerializer(serializers.Serializer):
-    education = serializers.ListField(
-        child=serializers.DictField()
-    )
-    
-    def validate_education(self, value):
-        for edu in value:
-            if 'institution' not in edu or 'degree' not in edu:
-                raise serializers.ValidationError("Each education entry must have 'institution' and 'degree' fields")
-        return value
+    class Meta:
+        model = Profile
+        fields = [
+            'name', 'email', 'title', 'bio', 'gender', 'age', 
+            'education_level', 'experience', 'career_preferences', 
+            'location', 'phone', 'website'
+        ]
