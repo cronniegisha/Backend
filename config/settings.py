@@ -33,6 +33,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    'web-production-ccf4.up.railway.app'
 ]
 
 # Static files (CSS, JavaScript, Images)
