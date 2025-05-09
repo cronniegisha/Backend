@@ -76,5 +76,6 @@ urllib3==2.4.0
 vine==5.1.0
 wcwidth==0.2.13
 websocket-client==1.8.0
+whitenoise==6.9.0
 wsproto==1.2.0
 xgboost==3.0.0
