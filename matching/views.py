@@ -53,9 +53,21 @@ from rest_framework.authtoken.models import Token
 from django.db.models import Avg, Count, Sum, Max, Min
 from django.utils.timezone import now
 import csv
+from rest_framework import status, generics
+from .serializers import CareerPredictionSerializer, SaveCareerPredictionSerializer
+from rest_framework import viewsets, status, permissions
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.views import APIView
+from django.shortcuts import get_object_or_404
+from django.contrib.auth.models import User
+from .serializers import CareerPredictionSerializer, SaveCareerPredictionSerializer
+from .serializers import (
+    ProfileSerializer, SkillSerializer, InterestSerializer, 
+    EducationSerializer, PersonalInfoSerializer
+)
 User = get_user_model()
 
-
+#Career Prediction
 # Load the career dataset
 def load_career_dataset():
     """Load the career dataset with descriptions, required skills, and industry types"""
@@ -228,19 +240,43 @@ def predict_career(request):
             
             # Create explanation
             explanation = {
-                "skills": matching_skills[:3],  # Top 3 matching skills
-                "interests": matching_interests[:3],  # Top 3 matching interests
+                "skills": matching_skills[:5],  # Top 3 matching skills
+                "interests": matching_interests[:5],  # Top 3 matching interests
                 "education_match": True  # Simplified for this example
             }
-            
+            # Extract and clean user input
+            user_skills = [skill.strip().lower() for skill in data.get('skills', []) if isinstance(skill, str)]
+            user_interests = [interest.strip().lower() for interest in data.get('interests', []) if isinstance(interest, str)]
+
+            # Compute skill match ratio based on whether they exist in the encoder’s known classes
+            valid_user_skills = set(user_skills) & set(skills_encoder.classes_)
+            skill_match_ratio = len(valid_user_skills) / len(user_skills) if user_skills else 0
+
+            # Compute interest match ratio similarly
+            valid_user_interests = set(user_interests) & set(interests_encoder.classes_)
+            interest_match_ratio = len(valid_user_interests) / len(user_interests) if user_interests else 0
+
+            # Education is always considered a match for now
+            education_match_bonus = 1
+
+            # Final match score (based on prediction + user input relevance)
+            match_score = (float(probability) * 0.5 + skill_match_ratio * 0.3 + interest_match_ratio * 0.2) * 100
+
+            # Build recommendation
             recommendations.append({
                 "title": career,
-                "matchScore": round(float(probability) * 1000), 
+                "matchScore": round(match_score, 2),
                 "description": career_details['description'],
-                "requiredSkills": career_details['required_skills'],
+                "requiredSkills": career_details['required_skills'],  # for display only
                 "industryType": career_details['industry_type'],
-                "explanation": explanation
+                "explanation": {
+                    "skills": matching_skills[:5],       # user input, top 3
+                    "interests": matching_interests[:5], # user input, top 3
+                    "education_match": True
+                }
             })
+
+                
 
           # SAVE PREDICTION HISTORY
         PredictionHistory.objects.create(
@@ -265,7 +301,7 @@ def predict_career(request):
         traceback.print_exc()
         return JsonResponse({'error': str(e)}, status=500)
 
-
+#Admin Dashboard
 @method_decorator(csrf_exempt, name='dispatch')
 class TrackUserActivity(View):
     def post(self, request, *args, **kwargs):
@@ -326,7 +362,7 @@ def user_engagement_summary(request):
         "weekly_active_users": weekly_users,
     })
 
-
+#Job Listing
 class JobViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Job.objects.all()
     serializer_class = JobSerializer
@@ -360,7 +396,7 @@ def register_user(request):
     user = User.objects.create_user(username=username, password=password)
     return Response({'message': 'User registered successfully'})
 
-
+#Skill assessment
 def home(request):
     """
     A simple home endpoint to welcome users to the system.
@@ -565,6 +601,7 @@ def get_token_from_request(request):
             return None
     return None
 
+#Auth
 class SignUpView(generics.CreateAPIView):
     serializer_class = UserSerializer
     permission_classes = [AllowAny]  
@@ -609,129 +646,7 @@ class SignInView(APIView):
         print("Token set in cookie:", token.key)
         return response
 
-
-class UserInterestsView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        interests = Interest.objects.filter(user=request.user)
-        serializer = InterestSerializer(interests, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        # Clear existing interests and add new ones
-        Interest.objects.filter(user=request.user).delete()
-        interests_data = request.data.get('interests', [])
-        for interest in interests_data:
-            Interest.objects.create(
-                user=request.user,
-                name=interest['name'],
-                category=interest.get('category', 'Personal')
-            )
-        return Response({"message": "Interests updated successfully."})
-
-@api_view(["GET", "POST", "PUT"])
-@permission_classes([IsAuthenticated])
-def education(request):
-    if request.method == "GET":
-        # Return all education entries for current user
-        educations = Education.objects.filter(user=request.user)
-        serializer = EducationSerializer(educations, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    elif request.method in ["POST", "PUT"]:
-        # Clear existing entries (if PUT or POST is treated as update)
-        Education.objects.filter(user=request.user).delete()
-
-        education_data = request.data.get("education", [])
-
-        if not isinstance(education_data, list):
-            return Response({"error": "Expected a list of education entries under 'education' key."}, status=400)
-
-        for edu in education_data:
-            if not isinstance(edu, dict):
-                continue  # skip invalid entry
-
-            year_range = edu.get("year", " - ")
-            start_year, end_year = ("", "")
-            if " - " in year_range:
-                start_year, end_year = year_range.split(" - ")
-
-            Education.objects.create(
-                user=request.user,
-                institution=edu.get("institution"),
-                degree=edu.get("degree"),
-                field=edu.get("field"),
-                start_year=start_year.strip(),
-                end_year=end_year.strip(),
-                description=edu.get("description")
-            )
-
-        return Response({"message": "Education updated successfully."}, status=status.HTTP_200_OK)
-    
-
-class UserSkillsView(APIView):
-    permission_classes = [permissions.IsAuthenticated]
-
-    def get(self, request):
-        skills = Skill.objects.filter(user=request.user)
-        serializer = SkillSerializer(skills, many=True)
-        return Response(serializer.data)
-
-    def post(self, request):
-        # Clear old skills and add new ones
-        Skill.objects.filter(user=request.user).delete()
-        skills_data = request.data.get('skills', [])
-
-        for skill in skills_data:
-            Skill.objects.create(
-                user=request.user,
-                name=skill.get('name', ''),
-                level=skill.get('level', 'Intermediate'),
-                description=skill.get('description', '')
-            )
-
-        return Response({"message": "Skills updated successfully."}, status=status.HTTP_200_OK)
-
-class PersonalView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        profile, created = Profile.objects.get_or_create(user=request.user)
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
-
-    def post(self, request):
-        profile, created = Profile.objects.get_or_create(user=request.user)
-        serializer = ProfileSerializer(profile, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-class UserProfileView(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        profile, _ = Profile.objects.get_or_create(user=request.user)
-        serializer = ProfileSerializer(profile)
-        return Response(serializer.data)
-
-    def post(self, request):
-        profile, _ = Profile.objects.get_or_create(user=request.user)
-        serializer = ProfileSerializer(profile, data=request.data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def ensure_user_profile(request):
-    user = request.user
-    profile, created = Profile.objects.get_or_create(user=user)
-    return Response({"profile_id": profile.id, "created": created})
-
+#Logout session
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def current_user(request):
@@ -787,19 +702,7 @@ def verify_token(request):
 def get_csrf_token(request):
     return JsonResponse({"detail": "CSRF cookie set"})
 
-
-from rest_framework import viewsets, status, permissions
-from rest_framework.decorators import api_view, permission_classes
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from django.shortcuts import get_object_or_404
-from django.contrib.auth.models import User
-from .models import Profile, Skill, Interest, Education
-from .serializers import (
-    ProfileSerializer, SkillSerializer, InterestSerializer, 
-    EducationSerializer, PersonalInfoSerializer
-)
-
+#Profile
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
     Custom permission to only allow owners of a profile to edit it.
@@ -989,4 +892,94 @@ class EducationView(APIView):
         # Return updated education
         education = Education.objects.filter(profile=profile)
         serializer = EducationSerializer(education, many=True)
+        return Response(serializer.data)
+
+#Career Predictions
+class SaveCareerPredictionView(generics.CreateAPIView):
+    """
+    API view to save career predictions.
+    """
+    serializer_class = SaveCareerPredictionSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        return context
+    
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        prediction = serializer.save()
+        
+        # Return the created prediction with its results
+        return_serializer = CareerPredictionSerializer(prediction)
+        return Response(return_serializer.data, status=status.HTTP_201_CREATED)
+
+
+class GetLatestCareerPredictionView(generics.RetrieveAPIView):
+    """
+    API view to get the latest career prediction for the authenticated user.
+    """
+    serializer_class = CareerPredictionSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_object(self):
+        # Get the latest prediction for the user
+        try:
+            return CareerPrediction.objects.filter(user=self.request.user).latest('created_at')
+        except CareerPrediction.DoesNotExist:
+            return None
+    
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response(
+                {"detail": "No career predictions found for this user."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
+
+#Get jobs based on careers
+
+class GetJobListingsForCareerView(generics.ListAPIView):
+    """
+    API view to get job listings for a specific career title.
+    """
+    serializer_class = JobSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        career_title = self.kwargs.get('career_title')
+        if not career_title:
+            return Job.objects.none()
+        
+        # Search for jobs that match the career title
+        queryset = Job.objects.filter(title__icontains=career_title)
+        
+        # Sort by most recent (using created_at since that's in your model)
+        queryset = queryset.order_by('-created_at')
+        
+        return queryset[:10]  # Limit to 10 results
+    
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        
+        if not queryset.exists():
+            # If no exact matches, try to find related jobs based on keywords
+            career_title = self.kwargs.get('career_title', '')
+            keywords = career_title.split()
+            
+            # Create a queryset for jobs that match any of the keywords
+            from django.db.models import Q
+            query = Q()
+            for keyword in keywords:
+                if len(keyword) > 3:  # Only use keywords longer than 3 characters
+                    query |= Q(title__icontains=keyword) | Q(company__icontains=keyword)
+            
+            if query:
+                queryset = Job.objects.filter(query).order_by('-created_at')[:10]
+        
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

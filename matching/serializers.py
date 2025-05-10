@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from .models import Profile, Education, Interest, Job, Skill, ProfileSkill
+from .models import Profile, Education, Interest, Job, Skill, ProfileSkill, CareerPrediction, CareerResult
 
 User = get_user_model()
 
@@ -100,7 +100,7 @@ class ProfileSerializer(serializers.ModelSerializer):
         profile = Profile.objects.create(**validated_data)
         
         for skill_data in skills_data:
-            Skill.objects.create(profile=profile, **skill_data)
+            ProfileSkill.objects.create(profile=profile, **skill_data)
         
         for interest_data in interests_data:
             Interest.objects.create(profile=profile, **interest_data)
@@ -129,3 +129,75 @@ class PersonalInfoSerializer(serializers.ModelSerializer):
             'education_level', 'experience', 'career_preferences', 
             'location', 'phone', 'website'
         ]
+
+
+
+class CareerResultSerializer(serializers.ModelSerializer):
+    """
+    Serializer for individual career results.
+    """
+    requiredSkills = serializers.JSONField(source='required_skills')
+    matchScore = serializers.IntegerField(source='match_score')
+    industryType = serializers.CharField(source='industry_type')
+    
+    class Meta:
+        model = CareerResult
+        fields = ['id', 'title', 'matchScore', 'description', 'industryType', 'requiredSkills']
+
+
+class CareerPredictionSerializer(serializers.ModelSerializer):
+    """
+    Serializer for career predictions, including nested results.
+    """
+    results = CareerResultSerializer(many=True, read_only=True)
+    explanation = serializers.SerializerMethodField()
+    
+    class Meta:
+        model = CareerPrediction
+        fields = ['id', 'created_at', 'explanation', 'results']
+    
+    def get_explanation(self, obj):
+        """
+        Format the explanation data to match the frontend expectations.
+        """
+        return {
+            'skills': obj.skills,
+            'interests': obj.interests,
+            'education_match': obj.education_match
+        }
+
+
+class SaveCareerPredictionSerializer(serializers.Serializer):
+    """
+    Serializer for saving career predictions from the frontend.
+    """
+    educationLevel = serializers.CharField(required=True)
+    explanation = serializers.DictField(required=True)
+    results = serializers.ListField(required=True)
+    
+    def create(self, validated_data):
+        user = self.context['request'].user
+        explanation = validated_data.get('explanation', {})
+        results_data = validated_data.get('results', [])
+        
+        # Create the prediction
+        prediction = CareerPrediction.objects.create(
+            user=user,
+            skills=explanation.get('skills', []),
+            interests=explanation.get('interests', []),
+            education_match=explanation.get('education_match', False),
+            education_level=validated_data.get('educationLevel', '')
+        )
+        
+        # Create the results
+        for result_data in results_data:
+            CareerResult.objects.create(
+                prediction=prediction,
+                title=result_data.get('title', ''),
+                match_score=result_data.get('matchScore', 0),
+                description=result_data.get('description', ''),
+                industry_type=result_data.get('industryType', ''),
+                required_skills=result_data.get('requiredSkills', [])
+            )
+        
+        return prediction

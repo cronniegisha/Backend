@@ -5,9 +5,6 @@ from django.conf import settings
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-
-
-
 class Job(models.Model):
     title = models.CharField(max_length=255)
     company = models.CharField(max_length=255, null=True, blank=True)
@@ -44,28 +41,6 @@ class UserAssessment(models.Model):
 
     def __str__(self):
         return f"User {self.user_id} - {self.skill.skill_name}"
-
-
-class Career(models.Model):
-    career_name = models.CharField(max_length=255)
-    description = models.TextField()
-    required_skills = models.TextField()
-    qualifications = models.TextField()
-    industry_type = models.CharField(max_length=100)
-
-    def __str__(self):
-        return self.career_name
-
-class CareerMatch(models.Model):
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    career_name = models.CharField(max_length=255)
-    description = models.TextField()
-    required_skills = models.TextField()
-    industry_type = models.CharField(max_length=100)
-    match_score = models.FloatField()
-
-    def __str__(self):
-        return f"{self.user.username} - {self.career_name}"
 
 
 class UserManager(BaseUserManager):
@@ -177,3 +152,43 @@ class Education(models.Model):
     
     def __str__(self):
         return f"{self.degree} at {self.institution} ({self.profile.user.username})"
+
+
+
+class CareerPrediction(models.Model):
+    """
+    Stores a career prediction session for a user, including the explanation
+    and timestamp.
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='career_predictions')
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    # Explanation fields
+    skills = models.JSONField(default=list)  # List of skills used for prediction
+    interests = models.JSONField(default=list)  # List of interests used for prediction
+    education_match = models.BooleanField(default=False)  # Whether education matches requirements
+    education_level = models.CharField(max_length=100, blank=True)  # User's education level at time of prediction
+    
+    class Meta:
+        ordering = ['-created_at']
+        
+    def __str__(self):
+        return f"Career Prediction for {self.user.username} on {self.created_at.strftime('%Y-%m-%d')}"
+
+
+class CareerResult(models.Model):
+    """
+    Stores an individual career result within a prediction.
+    """
+    prediction = models.ForeignKey(CareerPrediction, on_delete=models.CASCADE, related_name='results')
+    title = models.CharField(max_length=255)
+    match_score = models.IntegerField()
+    description = models.TextField(blank=True)
+    industry_type = models.CharField(max_length=255, blank=True)
+    required_skills = models.JSONField(default=list)  # List of required skills
+    
+    class Meta:
+        ordering = ['-match_score']
+        
+    def __str__(self):
+        return f"{self.title} ({self.match_score}%)"
