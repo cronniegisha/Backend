@@ -5,7 +5,7 @@ from .serializers import *
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
-from .views import SignUpView, verify_token, GetLatestCareerPredictionView, GetJobListingsForCareerView, SignInView, get_csrf_token, logout_view, ensure_profile, current_user, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
+from .views import SignUpView, verify_token, get_user_skills_assessment, GetLatestCareerPredictionView, GetJobListingsForCareerView, SignInView, get_csrf_token, logout_view, ensure_profile, current_user, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
 from .views import ProfileView, ProfileHeaderView, PersonalInfoView, SkillsView, InterestsView, EducationView, SaveCareerPredictionView
 
 urlpatterns = [
@@ -14,11 +14,6 @@ urlpatterns = [
     path('register/', register_user, name='register'),
     path('login/', TokenObtainPairView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/submit-assessment/', views.submit_assessment, name='submit_assessment'),
-    path('api/skills/', views.get_skills, name='get_skills'),
-    path('recommend-careers/', views.recommend_careers, name='recommend-careers'),
-    path('recommend-learning/', views.recommend_learning, name='recommend-learning'),
-    path('', views.home, name='home'),
     path('predict/', views.predict_career, name='predict_career'),
     path('signup/', SignUpView.as_view(), name='signup'),
     path('signin/', SignInView.as_view(), name='signin'),
@@ -40,6 +35,7 @@ urlpatterns = [
     path('save/', SaveCareerPredictionView.as_view(), name='save-career-prediction'),
     path('latest/', GetLatestCareerPredictionView.as_view(), name='get-latest-prediction'),
     path('job/<str:career_title>/', GetJobListingsForCareerView.as_view(), name='get-job-listings'),
+    path('skills/assessment/', get_user_skills_assessment, name='get-skills-assessment'),
     
    
 ]

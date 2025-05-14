@@ -103,7 +103,7 @@ ROOT_URLCONF = 'config.urls'
 # Allow requests from your Next.js frontend
 CORS_ALLOWED_ORIGINS = [
    'https://ecgs-frontend.vercel.app',
-   "http://localhost:3001",
+   "http://localhost:3000",
    "https://ecgs-frontend-a2x9ehccs-cassandras-projects-e493b44c.vercel.app",
    
    
@@ -111,7 +111,7 @@ CORS_ALLOWED_ORIGINS = [
 
 CSRF_TRUSTED_ORIGINS = [
    'https://ecgs-frontend.vercel.app',
-   "http://localhost:3001",
+   "http://localhost:3000",
    "https://ecgs-frontend-a2x9ehccs-cassandras-projects-e493b44c.vercel.app",
    
 ]

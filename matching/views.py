@@ -397,196 +397,218 @@ def register_user(request):
     return Response({'message': 'User registered successfully'})
 
 #Skill assessment
-def home(request):
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_user_skills_assessment(request):
     """
-    A simple home endpoint to welcome users to the system.
-    """
-    return HttpResponse("Welcome to the E-Career Guidance System!")
-    
-@csrf_exempt
-def recommend_careers(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        user_skills = data.get('skills', [])
-
-        # 💡 Your logic to recommend careers based on `user_skills`
-        careers = ["Software Developer", "Data Analyst"]  # Replace with actual logic
-
-        return JsonResponse({"careers": careers})
-    return JsonResponse({"error": "Invalid request method"}, status=400)
-
-@api_view(['POST'])
-def recommend_learning(request):
-    missing_skills = request.data.get("missing_skills", [])
-    skills_to_improve = request.data.get("skills_to_improve", [])
-    all_skills = set(missing_skills + skills_to_improve)
-
-    resources = []
-    for skill in all_skills:
-        links = generate_dynamic_learning_links(skill)
-        for link in links:
-            resources.append({
-                "skill": skill,
-                "site": link["site"],
-                "resource": link["url"]
-            })
-
-    return Response({"resources": resources})
-    
-def process_skills(user_skills):
-    """
-    Process the user's skills and return analysis results.
-    """
-    if not user_skills or not isinstance(user_skills, list):
-        return {"error": "Invalid or missing 'skills' list."}
-
-    # Step 1: Analyze skills and predict gaps
-    skill_analysis = identify_skill_gaps(user_skills)
-    
-    # Debugging: print the skill analysis
-    print("Skill Analysis:", skill_analysis)
-
-    # Step 2: Extract skills by category
-    missing_skills = [
-        skill.split(": ")[1]
-        for skill in skill_analysis if skill.startswith("Missing skill")
-    ]
-    
-    skills_to_improve = [
-        skill.split(": ")[1]
-        for skill in skill_analysis if skill.startswith("Skill to improve")
-    ]
-    
-    strong_skills = [
-        skill.split(": ")[1]
-        for skill in skill_analysis if skill.startswith("Strong skill")
-    ]
-
-    # Step 3: Fetch learning recommendations
-    learning_recommendations = get_learning_resources(missing_skills + skills_to_improve)
-
-    # Step 4: Calculate percentage scores by skill type
-    # This is a placeholder - implement your actual percentage calculation logic
-    percentage_scores = calculate_percentage_scores(user_skills)
-
-    return {
-        "percentage_scores": percentage_scores,
-        "strong_skills": strong_skills,
-        "skills_to_improve": skills_to_improve,
-        "missing_skills": missing_skills,
-        "learning_recommendations": learning_recommendations
-    }
-
-
-def calculate_percentage_scores(user_skills):
-    """
-    Calculate percentage scores by skill type.
-    Implement your actual calculation logic from your ML model here.
-    """
-    # This is a placeholder - replace with your actual calculation
-    skill_types = {
-        "Technical Skills": [],
-        "Soft Skills": [],
-        "Management Skills": [],
-        "Analytical": [],
-        "Creative": []
-    }
-    
-    # Group skills by type
-    for skill in user_skills:
-        skill_type = skill.get("type", "Technical Skills")
-        if skill_type in skill_types:
-            skill_types[skill_type].append(skill)
-    
-    # Calculate average score for each type
-    percentage_scores = {}
-    for skill_type, skills in skill_types.items():
-        if skills:
-            avg_score = sum(skill.get("score", 0) for skill in skills) / len(skills)
-            # Convert to percentage (assuming score is 1-5)
-            percentage = (avg_score / 5) * 100
-            percentage_scores[skill_type] = f"{percentage:.1f}%"
-        else:
-            percentage_scores[skill_type] = "0.0%"
-    
-    return percentage_scores
-
-
-@api_view(['POST'])
-@permission_classes([AllowAny])  # Allow any client to access this endpoint
-@csrf_exempt  # Disable CSRF for this API endpoint
-def submit_assessment(request):
-    """
-    Process skill assessment data and return formatted results for the frontend.
+    Get the user's skills from their profile and their predicted careers with required skills.
+    Also analyze the skills gap and provide learning recommendations.
     """
     try:
-        # Get skills data from request
-        user_skills = request.data.get('skills', [])
+        # Get user profile
+        user = request.user
+        profile = user.profile  # Assuming you have a profile related to the user
         
-        # Process the skills
-        result = process_skills(user_skills)
+        # Get user skills from profile - FIX FOR RELATEDMANAGER ERROR
+        user_skills = []
+        if hasattr(profile, 'skills'):
+            # If skills is a RelatedManager (ManyToMany field)
+            if hasattr(profile.skills, 'all'):
+                skills_queryset = profile.skills.all()
+                for skill in skills_queryset:
+                    if hasattr(skill, 'name'):
+                        user_skills.append(skill.name)
+                    else:
+                        # If the skill object itself is the value
+                        user_skills.append(str(skill))
+            # If skills is a JSON field or regular attribute
+            elif isinstance(profile.skills, (list, tuple)):
+                for skill in profile.skills:
+                    if isinstance(skill, dict) and 'name' in skill:
+                        user_skills.append(skill['name'])
+                    elif isinstance(skill, str):
+                        user_skills.append(skill)
+            # If skills is a string (comma-separated list)
+            elif isinstance(profile.skills, str):
+                user_skills = [s.strip() for s in profile.skills.split(',') if s.strip()]
         
-        if "error" in result:
-            return Response({"error": result["error"]}, status=400)
+        # Get the user's latest career prediction
+        latest_prediction = CareerPrediction.objects.filter(user=user).order_by('-created_at').first()
         
-        # Format the response for the frontend
+        if not latest_prediction:
+            return Response({
+                "error": "No career predictions found. Please complete a career assessment first."
+            }, status=404)
+        
+        # Get the top 3 career results from the prediction
+        career_results = CareerResult.objects.filter(prediction=latest_prediction).order_by('-match_score')[:3]
+        
+        if not career_results:
+            return Response({
+                "error": "No career results found in your latest prediction."
+            }, status=404)
+        
+        # Format career data with required skills
+        careers_data = []
+        all_required_skills = set()
+        
+        for career in career_results:
+            # Get required skills for this career - handle different data types
+            required_skills = []
+            if hasattr(career, 'required_skills'):
+                if isinstance(career.required_skills, (list, tuple)):
+                    required_skills = career.required_skills
+                elif isinstance(career.required_skills, str):
+                    required_skills = [s.strip() for s in career.required_skills.split(',') if s.strip()]
+            
+            # Add to the set of all required skills
+            all_required_skills.update(required_skills)
+            
+            careers_data.append({
+                "id": career.id,
+                "title": career.title,
+                "matchScore": career.match_score,
+                "requiredSkills": required_skills
+            })
+        
+        # Analyze skills gap
+        missing_skills = list(all_required_skills - set(user_skills))
+        strong_skills = list(set(user_skills).intersection(all_required_skills))
+        
+        # Skills to improve - skills that appear in multiple careers but user has them
+        skills_frequency = {}
+        for career in career_results:
+            if hasattr(career, 'required_skills'):
+                req_skills = []
+                if isinstance(career.required_skills, (list, tuple)):
+                    req_skills = career.required_skills
+                elif isinstance(career.required_skills, str):
+                    req_skills = [s.strip() for s in career.required_skills.split(',') if s.strip()]
+                
+                for skill in req_skills:
+                    if skill in skills_frequency:
+                        skills_frequency[skill] += 1
+                    else:
+                        skills_frequency[skill] = 1
+        
+        # Skills that appear in multiple careers are important to improve
+        skills_to_improve = [skill for skill in strong_skills if skills_frequency.get(skill, 0) > 1]
+        
+        # Generate learning paths
+        learning_paths = generate_learning_paths(careers_data, user_skills)
+        
+        # Generate learning resources
+        learning_resources = generate_learning_resources(missing_skills + skills_to_improve)
+        
+        # Format the response
         response_data = {
-            "percentageScores": result["percentage_scores"],
-            "strongSkills": result["strong_skills"],
-            "skillsToImprove": [
-                {
-                    "skill": skill,
-                    "course": result["learning_recommendations"].get(skill, {}).get("course", "No course available"),
-                    "link": result["learning_recommendations"].get(skill, {}).get("link", "")
-                }
-                for skill in result["skills_to_improve"]
-            ],
-            "missingSkills": [
-                {
-                    "skill": skill,
-                    "course": result["learning_recommendations"].get(skill, {}).get("course", "No course available"),
-                    "link": result["learning_recommendations"].get(skill, {}).get("link", "")
-                }
-                for skill in result["missing_skills"]
-            ]
+            "userSkills": user_skills,
+            "predictedCareers": careers_data,
+            "skillsAnalysis": {
+                "missingSkills": missing_skills,
+                "strongSkills": strong_skills,
+                "skillsToImprove": skills_to_improve
+            },
+            "learningPaths": learning_paths,
+            "learningResources": learning_resources
         }
         
-        # Save assessment to database if needed
-        UserAssessment.objects.create(
-            user=request.user if request.user.is_authenticated else None,
-            skills=user_skills,
-            results=response_data
-        )
-        
         return Response(response_data)
-
+        
     except Exception as e:
-        print(f"Error processing assessment: {str(e)}")
+        print(f"Error in get_user_skills_assessment: {str(e)}")
+        import traceback
+        traceback.print_exc()  # Print full traceback for debugging
         return Response({"error": str(e)}, status=500)
 
 
-
-@api_view(['GET'])
-@permission_classes([AllowAny])
-def get_skills(request):
+def generate_learning_paths(careers, user_skills):
     """
-    Return a list of predefined skills for the assessment.
+    Generate learning paths for each career based on user's current skills.
     """
-    # You can replace this with skills from your database
-    skills = [
-        {"id": 1, "name": "Python Programming", "type": "Technical Skills"},
-        {"id": 2, "name": "Data Analysis", "type": "Technical Skills"},
-        {"id": 3, "name": "Communication", "type": "Soft Skills"},
-        {"id": 4, "name": "Project Management", "type": "Management Skills"},
-        {"id": 5, "name": "Problem Solving", "type": "Analytical"},
-        {"id": 6, "name": "Creative Thinking", "type": "Creative"},
-        {"id": 7, "name": "JavaScript", "type": "Technical Skills"},
-        {"id": 8, "name": "Leadership", "type": "Management Skills"},
-        {"id": 9, "name": "Critical Thinking", "type": "Analytical"},
-        {"id": 10, "name": "Design Thinking", "type": "Creative"},
-    ]
+    learning_paths = []
     
-    return Response(skills)
+    for career in careers:
+        # Get missing skills for this specific career
+        career_required_skills = set(career.get("requiredSkills", []))
+        user_skill_set = set(user_skills)
+        career_missing_skills = list(career_required_skills - user_skill_set)
+        
+        # Create a learning path
+        path = {
+            "careerTitle": career["title"],
+            "steps": []
+        }
+        
+        # Add steps to the learning path
+        if career_missing_skills:
+            for i, skill in enumerate(career_missing_skills):
+                path["steps"].append({
+                    "step": i + 1,
+                    "skill": skill,
+                    "description": f"Learn {skill} to enhance your qualifications for {career['title']}",
+                    "estimatedTime": "2-4 weeks"  # This could be more dynamic based on skill complexity
+                })
+        else:
+            path["steps"].append({
+                "step": 1,
+                "skill": "Advanced Topics",
+                "description": f"You have all the basic skills for {career['title']}. Consider learning advanced topics.",
+                "estimatedTime": "Ongoing"
+            })
+        
+        learning_paths.append(path)
+    
+    return learning_paths
+
+
+def generate_learning_resources(skills):
+    """
+    Generate learning resources for the given skills.
+    """
+    resources = {}
+    
+    for skill in skills:
+        # Generate resources for each skill
+        skill_resources = []
+        
+        # Add Coursera resources
+        skill_resources.append({
+            "platform": "Coursera",
+            "title": f"{skill} Specialization",
+            "url": f"https://www.coursera.org/search?query={skill.replace(' ', '%20')}",
+            "type": "Course"
+        })
+        
+        # Add Udemy resources
+        skill_resources.append({
+            "platform": "Udemy",
+            "title": f"Complete {skill} Bootcamp",
+            "url": f"https://www.udemy.com/courses/search/?q={skill.replace(' ', '%20')}",
+            "type": "Course"
+        })
+        
+        # Add YouTube resources
+        skill_resources.append({
+            "platform": "YouTube",
+            "title": f"{skill} Tutorial Series",
+            "url": f"https://www.youtube.com/results?search_query={skill.replace(' ', '+')}+tutorial",
+            "type": "Video"
+        })
+        
+        # Add documentation/reading resources
+        skill_resources.append({
+            "platform": "Documentation",
+            "title": f"{skill} Documentation",
+            "url": f"https://www.google.com/search?q={skill.replace(' ', '+')}+documentation",
+            "type": "Reading"
+        })
+        
+        resources[skill] = skill_resources
+    
+    return resources
+
 
 # Token helper
 def get_token_from_request(request):
