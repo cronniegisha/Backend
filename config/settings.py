@@ -120,7 +120,7 @@ CSRF_TRUSTED_ORIGINS = [
    
 ]
 
-SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SAMESITE = "None"
 
 
 
@@ -196,7 +196,7 @@ STATIC_URL = '/static/'
 
 CSRF_COOKIE_SECURE = False
 SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_SAMESITE = 'None'
 
 
 # Default primary key field type

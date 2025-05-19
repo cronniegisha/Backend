@@ -660,8 +660,8 @@ class SignInView(APIView):
             key='auth_token',
             value=token.key,
             httponly=True,
-            secure=False,  # Set to True in production with HTTPS
-            samesite='Lax',
+            secure=True,  # Set to True in production with HTTPS
+            samesite='None',
             max_age=7 * 24 * 60 * 60,
             path='/',
         )
