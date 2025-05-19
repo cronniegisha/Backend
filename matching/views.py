@@ -66,6 +66,7 @@ from .serializers import (
     EducationSerializer, PersonalInfoSerializer
 )
 from django.views.generic import TemplateView
+from .model_utils import load_model
 
 
 class HomeView(TemplateView):
@@ -97,7 +98,7 @@ def load_models():
     """Load all the trained models and encoders"""
     model_dir = os.path.join(settings.BASE_DIR, 'matching/model')
     
-    model = joblib.load(os.path.join(model_dir, "rf_model.pkl"))
+    model = load_model()
     skills_encoder = joblib.load(os.path.join(model_dir, "skills_encoder.pkl"))
     interests_encoder = joblib.load(os.path.join(model_dir, "interests_encoder.pkl"))
     education_encoder = joblib.load(os.path.join(model_dir, "education_encoder.pkl"))
