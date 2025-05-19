@@ -1,8 +1,10 @@
 import os
 import joblib
 import gdown
+from django.conf import settings
 
-MODEL_PATH = 'models/model.joblib'  # Customize if needed
+
+MODEL_PATH = os.path.join(settings.BASE_DIR, 'model', 'rf_model.pkl')
 MODEL_URL = os.getenv('MODEL_URL')  # Read from Railway env variable
 
 def download_model():
