@@ -65,6 +65,12 @@ from .serializers import (
     ProfileSerializer, SkillSerializer, InterestSerializer, 
     EducationSerializer, PersonalInfoSerializer
 )
+from django.views.generic import TemplateView
+
+
+class HomeView(TemplateView):
+    template_name = "home/home.html"
+    
 User = get_user_model()
 
 #Career Prediction
@@ -660,8 +666,8 @@ class SignInView(APIView):
             key='auth_token',
             value=token.key,
             httponly=True,
-            secure=True,  # Set to True in production with HTTPS
-            samesite='None',
+            secure=False,  # Set to True in production with HTTPS
+            samesite='Lax',
             max_age=7 * 24 * 60 * 60,
             path='/',
         )
