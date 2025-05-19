@@ -44,7 +44,7 @@ Sales Representative,Sells products/services and maintains customer relations,"C
 Oil and Gas engineer,Designs extraction methods for oil and gas,"Engineering, geology, problem-solving",Bachelor's ,Oil and gas
 Dentist,Diagnoses and treats oral health problems,"Dental procedures, patient care, diagnosis",Bachelor's ,Healthcare
 Surgeon,Performs medical operations and procedures,"Surgery, precision, patient care",Bachelor's,Healthcare
-AI Reasearcher,Develops artificial intelligence algorithms and applications,"Machine learning, programming, statistics",Master's,Technology
+AI Researcher,Develops artificial intelligence algorithms and applications,"Machine learning, programming, statistics",Master's,Technology
 UX Designer,Designs user-friendly digital interfaces,"UI/UX design, wireframing, research",Bachelor's,Technology
 Graphics Designer,Creates visual content for branding and marketing,"Photoshop, Illustrator, creativity",Bachelor's,Technology
 Economist,Analyzes economic trends and policies,"Data analysis, research, economic modeling",Bachelor's,Finance
@@ -95,7 +95,7 @@ Cybersecurity Analyst,Protects systems and data from cyber threats,"Ethical hack
 AI Engineer,Develops artificial intelligence models and applications,"Machine learning, programming, AI frameworks",Bachelor’s,"IT, Tech"
 Biostatistician,Applies statistics to biological and healthcare research,"Statistics, data analysis, epidemiology",Master’s,"Healthcare, Research"
 Business Analyst,Evaluates business processes and suggests improvements,"Data analysis, problem-solving, communication",Bachelor’s ,"Business, IT"
-Mobile Developer,Creates applications for mobile devices,"Swift, Kotlin, Flutter, UI/UX",Bachelor’s ,"IT, Software"
+Mobile App Developer,Creates applications for mobile devices,"Swift, Kotlin, Flutter, UI/UX",Bachelor’s ,"IT, Software"
 Content Strategist,Plans and manages content creation for brands,"Writing, SEO, marketing strategy",Bachelor’s ,"Media, Marketing"
 NLP Engineer,Develops AI models for language processing,"Python, deep learning, linguistics",Master’s,"IT, Research"
 Data Engineer,Builds and maintains data pipelines for analytics,"SQL, big data, cloud computing",Bachelor’s ,"IT, Data Science"

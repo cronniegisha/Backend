@@ -5,6 +5,8 @@ from .serializers import *
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from . import views
+from .views import SignUpView, verify_token, get_user_skills_assessment, GetLatestCareerPredictionView, GetJobListingsForCareerView, SignInView, get_csrf_token, logout_view, ensure_profile, current_user, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
+from .views import ProfileView, ProfileHeaderView, PersonalInfoView, SkillsView, InterestsView, EducationView, SaveCareerPredictionView
 from .views import SignUpView, verify_token, SignInView, get_csrf_token, logout_view, ensure_profile, UserProfileView, current_user, UserSkillsView, education, UserInterestsView, TrackUserActivity, dashboard_summary, user_engagement_summary, export_prediction_report
 from .views import ProfileView, ProfileHeaderView, PersonalInfoView, SkillsView, InterestsView, EducationView
 from .views import HomeView
@@ -39,6 +41,10 @@ urlpatterns = [
     path('skills/', views.SkillsView.as_view(), name='skills'),
     path('interests/', views.InterestsView.as_view(), name='interests'),
     path('education/', views.EducationView.as_view(), name='education'),
+    path('save/', SaveCareerPredictionView.as_view(), name='save-career-prediction'),
+    path('latest/', GetLatestCareerPredictionView.as_view(), name='get-latest-prediction'),
+    path('job/<str:career_title>/', GetJobListingsForCareerView.as_view(), name='get-job-listings'),
+    path('skills/assessment/', get_user_skills_assessment, name='get-skills-assessment'),
     
    
 ]
