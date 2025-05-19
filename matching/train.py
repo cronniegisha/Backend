@@ -286,6 +286,7 @@ def train_career_model(user_data_path):
     joblib.dump(scaler, "model/scaler.pkl")
     joblib.dump(recommended_career_encoder, "model/target_encoder.pkl")
     joblib.dump(feature_names, "model/feature_names.pkl")
+    
 
     print("\nTraining complete!")
     

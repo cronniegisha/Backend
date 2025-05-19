@@ -1,21 +1,17 @@
 import os
-import requests
-import joblib  
-from django.conf import settings
+import joblib
+import gdown
 
-MODEL_URL = 'https://drive.google.com/uc?export=download&id=18g_MV77otCEWUn9ahiYNp0WrMeMXOUT8'
-MODEL_PATH = os.path.join(settings.BASE_DIR, 'model', 'rf_model.pkl')
-
+MODEL_PATH = 'models/model.joblib'  # Customize if needed
+MODEL_URL = os.getenv('MODEL_URL')  # Read from Railway env variable
 
 def download_model():
     if not os.path.exists(MODEL_PATH):
-        print("Downloading model from Google Drive...")
         os.makedirs(os.path.dirname(MODEL_PATH), exist_ok=True)
-        response = requests.get(MODEL_URL)
-        with open(MODEL_PATH, 'wb') as f:
-            f.write(response.content)
-        print("Model downloaded and saved to:", MODEL_PATH)
-
+        print("Downloading model from Google Drive...")
+        gdown.download(MODEL_URL, MODEL_PATH, quiet=False)
+    else:
+        print("Model already exists. Skipping download.")
 
 def load_model():
     download_model()
